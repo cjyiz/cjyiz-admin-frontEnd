@@ -173,7 +173,6 @@ import defaultSettings from '@/settings';
 // import { ThemeEnum } from '@/enums/ThemeEnum';
 
 import { useSettingsStore, useUserStore, useDictStore } from '@/store';
-import { router } from '@/router';
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
