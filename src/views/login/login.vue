@@ -173,6 +173,7 @@ import defaultSettings from '@/settings';
 // import { ThemeEnum } from '@/enums/ThemeEnum';
 
 import { useSettingsStore, useUserStore, useDictStore } from '@/store';
+import { FormInstance } from 'element-plus';
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
