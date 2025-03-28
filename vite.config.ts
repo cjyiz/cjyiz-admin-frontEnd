@@ -49,8 +49,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       port: Number(env.VITE_PORT),
       open: true,
       proxy: {
-        [env.VITE_BASE_API]: {
-          target: env.VITE_API_URL,
+        [env.VITE_APP_BASE_API]: {
+          target: env.VITE_APP_API_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), ''),
         },
