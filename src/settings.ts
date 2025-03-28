@@ -4,7 +4,6 @@ const { pkg } = __APP_INFO__
 
 // 检查用户的操作系统是否使用深色模式
 const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
-
 const defaultSettings: AppSettings = {
   // 系统Title
   title: pkg.name,
@@ -33,5 +32,6 @@ const defaultSettings: AppSettings = {
   // 侧边栏配色方案
   sidebarColorScheme: SidebarColor.CLASSIC_BLUE,
 }
+console.log('获取的pkg', defaultSettings)
 
 export default defaultSettings
