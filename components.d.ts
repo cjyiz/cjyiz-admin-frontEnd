@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
     ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']
@@ -23,6 +24,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElWatermark: typeof import('element-plus/es')['ElWatermark']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
