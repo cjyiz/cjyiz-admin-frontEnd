@@ -7,10 +7,12 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import path from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd())
+  const pathSrc = path.resolve(__dirname, 'src')
   console.log('cjyizVIte配置', env)
   return {
     plugins: [
@@ -18,15 +20,29 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       vueJsx(),
       vueDevTools(),
       AutoImport({
+        imports: ['vue', 'pinia', 'vue-router'],
         resolvers: [ElementPlusResolver()],
+        vueTemplate: true,
+        dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts'),
       }),
       Components({
         resolvers: [ElementPlusResolver()],
+        dirs: ['src/components', 'src/**/components'],
+        dts: path.resolve(pathSrc, 'types', 'components.d.ts'),
       }),
     ],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
+      },
+    },
+    css: {
+      preprocessorOptions: {
+        // 定义全局 SCSS 变量
+        scss: {
+          api: 'modern-compiler',
+          additionalData: `@use "@/styles/variables.scss" as *;`,
+        },
       },
     },
     server: {
