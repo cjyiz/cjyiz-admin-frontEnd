@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div>这是layout页面</div>
-    <div>
-      <span>下面是匹配的路由</span>
+    <title>这是layout页面</title>
+    <body>
+      下面是匹配的路由
       <router-view />
-    </div>
+    </body>
     <div>这是底部</div>
   </div>
 </template>
