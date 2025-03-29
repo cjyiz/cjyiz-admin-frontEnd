@@ -16,7 +16,7 @@
 import defaultSettings from '@/settings'
 import { ThemeMode } from '@/enums/settings/theme.enum'
 import { ComponentSize } from '@/enums/settings/layout.enum'
-import { useAppStore, useSettingsStore } from './stores'
+import { useAppStore, useSettingsStore } from './store'
 
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
