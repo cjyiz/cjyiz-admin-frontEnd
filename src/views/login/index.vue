@@ -93,7 +93,7 @@
               @keyup.enter="handleLoginSubmit"
             />
 
-            <el-image :src="null" class="captcha-img" @click="getCaptcha" />
+            <el-image :src="captchaBase64" class="captcha-img" @click="getCaptcha" />
           </div>
         </el-form-item>
 
@@ -128,8 +128,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import type { FormInstance } from 'element-plus'
 import router from '@/router'
 
@@ -138,6 +136,7 @@ const loginFormRef = ref<FormInstance>()
 const loading = ref(false)
 const isDark = ref(false)
 const isCapslock = ref(false)
+const captchaBase64 = ref() // 验证码图片Base64字符串
 
 const loginFormData = ref({
   username: 'admin',

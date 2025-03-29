@@ -4,10 +4,27 @@ export const Layout = () => import('@/layout/index.vue')
 
 export const constantRoutes: RouteRecordRaw[] = [
   {
+    path: '/redirect',
+    component: Layout,
+    children: [
+      {
+        path: '/redirect/:path',
+        name: 'redirect',
+        component: () => import('@/views/RedirectView.vue'),
+      },
+    ],
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { hidden: true },
+  },
+  {
     path: '/',
     name: '/',
     component: Layout,
-    redirect: { name: 'dashboard' },
+    redirect: '/dashboard',
     children: [
       {
         path: 'dashboard',
@@ -22,21 +39,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/error/404.vue'),
       },
     ],
-  },
-  {
-    path: '/redirect',
-    component: Layout,
-    children: [
-      {
-        path: '/redirect/:path',
-        name: 'redirect',
-        component: () => import('@/views/RedirectView.vue'),
-      },
-    ],
-  },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index.vue'),
   },
 ]
 
