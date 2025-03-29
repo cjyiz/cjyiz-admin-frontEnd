@@ -29,7 +29,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       UnoCSS(),
       vueDevTools(),
       AutoImport({
-        imports: ['vue', 'pinia', '@vueuse/core', 'vue-router'],
+        imports: ['vue', 'pinia', '@vueuse/core', 'vue-router', 'vue-i18n'],
         resolvers: [ElementPlusResolver()],
         vueTemplate: true,
         dts: path.resolve(pathSrc, 'types', 'auto-imports.d.ts'),
