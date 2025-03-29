@@ -8,6 +8,8 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'node:path'
+import UnoCSS from 'unocss/vite'
+
 import { name, version, engines, dependencies, devDependencies } from './package.json'
 
 // 平台的名称、版本、运行所需的 node 版本、依赖、构建时间的类型提示
@@ -24,6 +26,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     plugins: [
       vue(),
       vueJsx(),
+      UnoCSS(),
       vueDevTools(),
       AutoImport({
         imports: ['vue', 'pinia', '@vueuse/core', 'vue-router'],
