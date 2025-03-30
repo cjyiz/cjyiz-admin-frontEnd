@@ -12,15 +12,15 @@
 </template>
 
 <script lang="ts" setup>
-import defaultSettings from '@/settings'
-import logo from '@/assets/logo.svg'
+import defaultSettings from "@/settings";
+import logo from "@/assets/logo.png";
 
 defineProps({
   collapse: {
     type: Boolean,
     required: true,
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>
