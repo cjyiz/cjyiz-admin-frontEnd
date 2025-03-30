@@ -78,9 +78,4 @@ const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
-// 全局注册 router
-export const setupRouter = (app: App<Element>) => {
-  app.use(router)
-}
-
 export default router
