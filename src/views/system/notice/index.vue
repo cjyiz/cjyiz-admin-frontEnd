@@ -88,16 +88,16 @@
           <template #default="scope">
             <div class="flex-x-start">
               <span>创建时间：</span>
-              <span>{{ scope.row.createTime || "-" }}</span>
+              <span>{{ scope.row.createTime || '-' }}</span>
             </div>
 
             <div v-if="scope.row.publishStatus === 1" class="flex-x-start">
               <span>发布时间：</span>
-              <span>{{ scope.row.publishTime || "-" }}</span>
+              <span>{{ scope.row.publishTime || '-' }}</span>
             </div>
             <div v-else-if="scope.row.publishStatus === -1" class="flex-x-start">
               <span>撤回时间：</span>
-              <span>{{ scope.row.revokeTime || "-" }}</span>
+              <span>{{ scope.row.revokeTime || '-' }}</span>
             </div>
           </template>
         </el-table-column>
@@ -250,210 +250,210 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Notice",
+  name: 'Notice',
   inheritAttrs: false,
-});
+})
 
 import NoticeAPI, {
   NoticePageVO,
   NoticeForm,
   NoticePageQuery,
   NoticeDetailVO,
-} from "@/api/system/notice.api";
-import UserAPI from "@/api/system/user.api";
+} from '@/api/system/notice.api'
+import UserAPI from '@/api/system/user.api'
 
-const queryFormRef = ref();
-const dataFormRef = ref();
+const queryFormRef = ref()
+const dataFormRef = ref()
 
-const loading = ref(false);
-const selectIds = ref<number[]>([]);
-const total = ref(0);
+const loading = ref(false)
+const selectIds = ref<number[]>([])
+const total = ref(0)
 
 const queryParams = reactive<NoticePageQuery>({
   pageNum: 1,
   pageSize: 10,
-});
+})
 
-const userOptions = ref<OptionType[]>([]);
+const userOptions = ref<OptionType[]>([])
 // 通知公告表格数据
-const pageData = ref<NoticePageVO[]>([]);
+const pageData = ref<NoticePageVO[]>([])
 
 // 弹窗
 const dialog = reactive({
-  title: "",
+  title: '',
   visible: false,
-});
+})
 
 // 通知公告表单数据
 const formData = reactive<NoticeForm>({
-  level: "L", // 默认优先级为低
+  level: 'L', // 默认优先级为低
   targetType: 1, // 默认目标类型为全体
-});
+})
 
 // 通知公告表单校验规则
 const rules = reactive({
-  title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
+  title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
   content: [
     {
       required: true,
-      message: "请输入通知内容",
-      trigger: "blur",
+      message: '请输入通知内容',
+      trigger: 'blur',
       validator: (rule: any, value: string, callback: any) => {
-        if (!value.replace(/<[^>]+>/g, "").trim()) {
-          callback(new Error("请输入通知内容"));
+        if (!value.replace(/<[^>]+>/g, '').trim()) {
+          callback(new Error('请输入通知内容'))
         } else {
-          callback();
+          callback()
         }
       },
     },
   ],
-  type: [{ required: true, message: "请选择通知类型", trigger: "change" }],
-});
+  type: [{ required: true, message: '请选择通知类型', trigger: 'change' }],
+})
 
 const detailDialog = reactive({
   visible: false,
-});
-const currentNotice = ref<NoticeDetailVO>({});
+})
+const currentNotice = ref<NoticeDetailVO>({})
 
 // 查询通知公告
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   NoticeAPI.getPage(queryParams)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+      pageData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 重置查询
 function handleResetQuery() {
-  queryFormRef.value!.resetFields();
-  queryParams.pageNum = 1;
-  handleQuery();
+  queryFormRef.value!.resetFields()
+  queryParams.pageNum = 1
+  handleQuery()
 }
 
 // 行复选框选中项变化
 function handleSelectionChange(selection: any) {
-  selectIds.value = selection.map((item: any) => item.id);
+  selectIds.value = selection.map((item: any) => item.id)
 }
 
 // 打开通知公告弹窗
 function handleOpenDialog(id?: number) {
   UserAPI.getOptions().then((data) => {
-    userOptions.value = data;
-  });
+    userOptions.value = data
+  })
 
-  dialog.visible = true;
+  dialog.visible = true
   if (id) {
-    dialog.title = "修改公告";
+    dialog.title = '修改公告'
     NoticeAPI.getFormData(id).then((data) => {
-      Object.assign(formData, data);
-    });
+      Object.assign(formData, data)
+    })
   } else {
-    Object.assign(formData, { level: 0, targetType: 0 });
-    dialog.title = "新增公告";
+    Object.assign(formData, { level: 0, targetType: 0 })
+    dialog.title = '新增公告'
   }
 }
 
 // 发布通知公告
 function handlePublish(id: number) {
   NoticeAPI.publish(id).then(() => {
-    ElMessage.success("发布成功");
-    handleQuery();
-  });
+    ElMessage.success('发布成功')
+    handleQuery()
+  })
 }
 
 // 撤回通知公告
 function handleRevoke(id: number) {
   NoticeAPI.revoke(id).then(() => {
-    ElMessage.success("撤回成功");
-    handleQuery();
-  });
+    ElMessage.success('撤回成功')
+    handleQuery()
+  })
 }
 
 // 通知公告表单提交
 function handleSubmit() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
-      loading.value = true;
-      const id = formData.id;
+      loading.value = true
+      const id = formData.id
       if (id) {
         NoticeAPI.update(id, formData)
           .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleResetQuery();
+            ElMessage.success('修改成功')
+            handleCloseDialog()
+            handleResetQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       } else {
         NoticeAPI.create(formData)
           .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleResetQuery();
+            ElMessage.success('新增成功')
+            handleCloseDialog()
+            handleResetQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       }
     }
-  });
+  })
 }
 
 // 重置表单
 function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-  formData.id = undefined;
-  formData.targetType = 1;
+  dataFormRef.value.resetFields()
+  dataFormRef.value.clearValidate()
+  formData.id = undefined
+  formData.targetType = 1
 }
 
 // 关闭通知公告弹窗
 function handleCloseDialog() {
-  dialog.visible = false;
-  resetForm();
+  dialog.visible = false
+  resetForm()
 }
 
 // 删除通知公告
 function handleDelete(id?: number) {
-  const deleteIds = [id || selectIds.value].join(",");
+  const deleteIds = [id || selectIds.value].join(',')
   if (!deleteIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
+    ElMessage.warning('请勾选删除项')
+    return
   }
 
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(
     () => {
-      loading.value = true;
+      loading.value = true
       NoticeAPI.deleteByIds(deleteIds)
         .then(() => {
-          ElMessage.success("删除成功");
-          handleResetQuery();
+          ElMessage.success('删除成功')
+          handleResetQuery()
         })
-        .finally(() => (loading.value = false));
+        .finally(() => (loading.value = false))
     },
     () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+      ElMessage.info('已取消删除')
+    },
+  )
 }
 
 const closeDetailDialog = () => {
-  detailDialog.visible = false;
-};
+  detailDialog.visible = false
+}
 
 const openDetailDialog = async (id: string) => {
-  const noticeDetail = await NoticeAPI.getDetail(id);
-  currentNotice.value = noticeDetail;
-  detailDialog.visible = true;
-};
+  const noticeDetail = await NoticeAPI.getDetail(id)
+  currentNotice.value = noticeDetail
+  detailDialog.visible = true
+}
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>

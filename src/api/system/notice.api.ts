@@ -1,15 +1,15 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-const NOTICE_BASE_URL = "/api/v1/notices";
+const NOTICE_BASE_URL = '/api/v1/notices'
 
 const NoticeAPI = {
   /** 获取通知公告分页数据 */
   getPage(queryParams?: NoticePageQuery) {
     return request<any, PageResult<NoticePageVO[]>>({
       url: `${NOTICE_BASE_URL}/page`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
 
   /**
@@ -21,8 +21,8 @@ const NoticeAPI = {
   getFormData(id: number) {
     return request<any, NoticeForm>({
       url: `${NOTICE_BASE_URL}/${id}/form`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -34,9 +34,9 @@ const NoticeAPI = {
   create(data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}`,
-      method: "post",
+      method: 'post',
       data: data,
-    });
+    })
   },
 
   /**
@@ -48,9 +48,9 @@ const NoticeAPI = {
   update(id: number, data: NoticeForm) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -61,8 +61,8 @@ const NoticeAPI = {
   deleteByIds(ids: string) {
     return request({
       url: `${NOTICE_BASE_URL}/${ids}`,
-      method: "delete",
-    });
+      method: 'delete',
+    })
   },
 
   /**
@@ -74,8 +74,8 @@ const NoticeAPI = {
   publish(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/publish`,
-      method: "put",
-    });
+      method: 'put',
+    })
   },
 
   /**
@@ -87,8 +87,8 @@ const NoticeAPI = {
   revoke(id: number) {
     return request({
       url: `${NOTICE_BASE_URL}/${id}/revoke`,
-      method: "put",
-    });
+      method: 'put',
+    })
   },
   /**
    * 查看通知
@@ -98,102 +98,102 @@ const NoticeAPI = {
   getDetail(id: string) {
     return request<any, NoticeDetailVO>({
       url: `${NOTICE_BASE_URL}/${id}/detail`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /* 全部已读 */
   readAll() {
     return request({
       url: `${NOTICE_BASE_URL}/read-all`,
-      method: "put",
-    });
+      method: 'put',
+    })
   },
 
   /** 获取我的通知分页列表 */
   getMyNoticePage(queryParams?: NoticePageQuery) {
     return request<any, PageResult<NoticePageVO[]>>({
       url: `${NOTICE_BASE_URL}/my-page`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
-};
+}
 
-export default NoticeAPI;
+export default NoticeAPI
 
 /** 通知公告分页查询参数 */
 export interface NoticePageQuery extends PageQuery {
   /** 标题 */
-  title?: string;
+  title?: string
   /** 发布状态(0：未发布，1：已发布，-1：已撤回) */
-  publishStatus?: number;
+  publishStatus?: number
 
-  isRead?: number;
+  isRead?: number
 }
 
 /** 通知公告表单对象 */
 export interface NoticeForm {
-  id?: number;
+  id?: number
   /** 通知标题 */
-  title?: string;
+  title?: string
   /** 通知内容 */
-  content?: string;
+  content?: string
   /** 通知类型 */
-  type?: number;
+  type?: number
   /** 优先级(L：低，M：中，H：高) */
-  level?: string;
+  level?: string
   /** 目标类型(1-全体 2-指定) */
-  targetType?: number;
+  targetType?: number
   /** 目标ID合集，以,分割 */
-  targetUserIds?: string;
+  targetUserIds?: string
 }
 
 /** 通知公告分页对象 */
 export interface NoticePageVO {
-  id: string;
+  id: string
   /** 通知标题 */
-  title?: string;
+  title?: string
   /** 通知内容 */
-  content?: string;
+  content?: string
   /** 通知类型 */
-  type?: number;
+  type?: number
   /** 发布人 */
-  publisherId?: bigint;
+  publisherId?: bigint
   /** 优先级(0-低 1-中 2-高) */
-  priority?: number;
+  priority?: number
   /** 目标类型(0-全体 1-指定) */
-  targetType?: number;
+  targetType?: number
   /** 发布状态(0-未发布 1已发布 2已撤回) */
-  publishStatus?: number;
+  publishStatus?: number
   /** 发布时间 */
-  publishTime?: Date;
+  publishTime?: Date
   /** 撤回时间 */
-  revokeTime?: Date;
+  revokeTime?: Date
 }
 
 export interface NoticeDetailVO {
   /** 通知ID */
-  id?: string;
+  id?: string
 
   /** 通知标题 */
-  title?: string;
+  title?: string
 
   /** 通知内容 */
-  content?: string;
+  content?: string
 
   /** 通知类型 */
-  type?: number;
+  type?: number
 
   /** 发布人 */
-  publisherName?: string;
+  publisherName?: string
 
   /** 优先级(L-低 M-中 H-高) */
-  level?: string;
+  level?: string
 
   /** 发布时间 */
-  publishTime?: Date;
+  publishTime?: Date
 
   /** 发布状态 */
-  publishStatus?: number;
+  publishStatus?: number
 }

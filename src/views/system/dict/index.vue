@@ -39,7 +39,7 @@
         <el-table-column label="状态" prop="status">
           <template #default="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">
-              {{ scope.row.status === 1 ? "启用" : "禁用" }}
+              {{ scope.row.status === 1 ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -125,72 +125,72 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Dict",
+  name: 'Dict',
   inherititems: false,
-});
+})
 
-import DictAPI, { DictPageQuery, DictPageVO, DictForm } from "@/api/system/dict.api";
+import DictAPI, { DictPageQuery, DictPageVO, DictForm } from '@/api/system/dict.api'
 
-import router from "@/router";
+import router from '@/router'
 
-const queryFormRef = ref();
-const dataFormRef = ref();
+const queryFormRef = ref()
+const dataFormRef = ref()
 
-const loading = ref(false);
-const ids = ref<number[]>([]);
-const total = ref(0);
+const loading = ref(false)
+const ids = ref<number[]>([])
+const total = ref(0)
 
 const queryParams = reactive<DictPageQuery>({
   pageNum: 1,
   pageSize: 10,
-});
+})
 
-const tableData = ref<DictPageVO[]>();
+const tableData = ref<DictPageVO[]>()
 
 const dialog = reactive({
-  title: "",
+  title: '',
   visible: false,
-});
+})
 
-const formData = reactive<DictForm>({});
+const formData = reactive<DictForm>({})
 
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
-    name: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
-    dictCode: [{ required: true, message: "请输入字典编码", trigger: "blur" }],
-  };
-  return rules;
-});
+    name: [{ required: true, message: '请输入字典名称', trigger: 'blur' }],
+    dictCode: [{ required: true, message: '请输入字典编码', trigger: 'blur' }],
+  }
+  return rules
+})
 
 // 查询
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   DictAPI.getPage(queryParams)
     .then((data) => {
-      tableData.value = data.list;
-      total.value = data.total;
+      tableData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 重置查询
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  handleQuery();
+  queryFormRef.value.resetFields()
+  queryParams.pageNum = 1
+  handleQuery()
 }
 
 // 行选择
 function handleSelectionChange(selection: any) {
-  ids.value = selection.map((item: any) => item.id);
+  ids.value = selection.map((item: any) => item.id)
 }
 
 // 新增字典
 function handleAddClick() {
-  dialog.visible = true;
-  dialog.title = "新增字典";
+  dialog.visible = true
+  dialog.title = '新增字典'
 }
 
 /**
@@ -199,48 +199,48 @@ function handleAddClick() {
  * @param id 字典ID
  */
 function handleEditClick(id: number) {
-  dialog.visible = true;
-  dialog.title = "修改字典";
+  dialog.visible = true
+  dialog.title = '修改字典'
   DictAPI.getFormData(id).then((data) => {
-    Object.assign(formData, data);
-  });
+    Object.assign(formData, data)
+  })
 }
 
 // 提交字典表单
 function handleSubmitClick() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
-      loading.value = true;
-      const id = formData.id;
+      loading.value = true
+      const id = formData.id
       if (id) {
         DictAPI.update(id, formData)
           .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleQuery();
+            ElMessage.success('修改成功')
+            handleCloseDialog()
+            handleQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       } else {
         DictAPI.create(formData)
           .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleQuery();
+            ElMessage.success('新增成功')
+            handleCloseDialog()
+            handleQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       }
     }
-  });
+  })
 }
 
 // 关闭字典弹窗
 function handleCloseDialog() {
-  dialog.visible = false;
+  dialog.visible = false
 
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  dataFormRef.value.resetFields()
+  dataFormRef.value.clearValidate()
 
-  formData.id = undefined;
+  formData.id = undefined
 }
 /**
  * 删除字典
@@ -248,37 +248,37 @@ function handleCloseDialog() {
  * @param id 字典ID
  */
 function handleDelete(id?: number) {
-  const attrGroupIds = [id || ids.value].join(",");
+  const attrGroupIds = [id || ids.value].join(',')
   if (!attrGroupIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
+    ElMessage.warning('请勾选删除项')
+    return
   }
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(
     () => {
       DictAPI.deleteByIds(attrGroupIds).then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      });
+        ElMessage.success('删除成功')
+        handleResetQuery()
+      })
     },
     () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+      ElMessage.info('已取消删除')
+    },
+  )
 }
 
 // 打开字典项
 function handleOpenDictData(row: DictPageVO) {
   router.push({
-    path: "/system/dict-item",
-    query: { dictCode: row.dictCode, title: "【" + row.name + "】字典数据" },
-  });
+    path: '/system/dict-item',
+    query: { dictCode: row.dictCode, title: '【' + row.name + '】字典数据' },
+  })
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>

@@ -19,11 +19,11 @@
               <el-tooltip v-bind="getTooltipProps(item.tips)">
                 <QuestionFilled class="w-4 h-4 mx-1" />
               </el-tooltip>
-              {{ searchConfig.colon === false ? "" : ":" }}
+              {{ searchConfig.colon === false ? '' : ':' }}
             </span>
           </template>
           <template v-else #label>
-            {{ item.label }} {{ searchConfig.colon === false ? "" : ":" }}
+            {{ item.label }} {{ searchConfig.colon === false ? '' : ':' }}
           </template>
 
           <component
@@ -52,7 +52,7 @@
           :underline="false"
           @click="isExpand = !isExpand"
         >
-          {{ isExpand ? "收起" : "展开" }}
+          {{ isExpand ? '收起' : '展开' }}
           <component :is="isExpand ? ArrowUp : ArrowDown" class="w-4 h-4 ml-2" />
         </el-link>
       </el-form-item>
@@ -61,73 +61,73 @@
 </template>
 
 <script setup lang="ts">
-import type { IObject, ISearchConfig, ComponentType } from "./types";
-import { ArrowUp, ArrowDown } from "@element-plus/icons-vue";
-import { ElInput, ElInputNumber, ElInputTag, ElSelect, ElCascader } from "element-plus";
-import { ElTimePicker, ElTimeSelect, ElOption, ElDatePicker, ElTreeSelect } from "element-plus";
-import { type FormInstance } from "element-plus";
-import InputTag from "@/components/InputTag/index.vue";
+import type { IObject, ISearchConfig, ComponentType } from './types'
+import { ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { ElInput, ElInputNumber, ElInputTag, ElSelect, ElCascader } from 'element-plus'
+import { ElTimePicker, ElTimeSelect, ElOption, ElDatePicker, ElTreeSelect } from 'element-plus'
+import { type FormInstance } from 'element-plus'
+import InputTag from '@/components/InputTag/index.vue'
 
 // 定义接收的属性
-const props = defineProps<{ searchConfig: ISearchConfig }>();
+const props = defineProps<{ searchConfig: ISearchConfig }>()
 // 自定义事件
 const emit = defineEmits<{
-  queryClick: [queryParams: IObject];
-  resetClick: [queryParams: IObject];
-}>();
+  queryClick: [queryParams: IObject]
+  resetClick: [queryParams: IObject]
+}>()
 // 组件映射表
 const componentMap: Record<ComponentType, Component> = {
   input: markRaw(ElInput),
   select: markRaw(ElSelect),
   cascader: markRaw(ElCascader),
-  "input-number": markRaw(ElInputNumber),
-  "date-picker": markRaw(ElDatePicker),
-  "time-picker": markRaw(ElTimePicker),
-  "time-select": markRaw(ElTimeSelect),
-  "tree-select": markRaw(ElTreeSelect),
-  "input-tag": markRaw(ElInputTag),
-  "custom-tag": markRaw(InputTag),
-};
+  'input-number': markRaw(ElInputNumber),
+  'date-picker': markRaw(ElDatePicker),
+  'time-picker': markRaw(ElTimePicker),
+  'time-select': markRaw(ElTimeSelect),
+  'tree-select': markRaw(ElTreeSelect),
+  'input-tag': markRaw(ElInputTag),
+  'custom-tag': markRaw(InputTag),
+}
 
-const queryFormRef = ref<FormInstance>();
+const queryFormRef = ref<FormInstance>()
 // 是否显示
-const visible = ref(true);
+const visible = ref(true)
 // 响应式的formItems
-const formItems = reactive(props.searchConfig.formItems);
+const formItems = reactive(props.searchConfig.formItems)
 // 是否可展开/收缩
-const isExpandable = ref(props.searchConfig.isExpandable ?? true);
+const isExpandable = ref(props.searchConfig.isExpandable ?? true)
 // 是否已展开
-const isExpand = ref(false);
+const isExpand = ref(false)
 // 表单项展示数量，若可展开，超出展示数量的表单项隐藏
 const showNumber = computed(() =>
-  isExpandable.value ? (props.searchConfig.showNumber ?? 3) : formItems.length
-);
+  isExpandable.value ? (props.searchConfig.showNumber ?? 3) : formItems.length,
+)
 // 搜索表单数据
-const queryParams = reactive<IObject>({});
+const queryParams = reactive<IObject>({})
 // 获取tooltip的属性
 const getTooltipProps = (tips: any) => {
-  return typeof tips === "string" ? { content: tips } : tips;
-};
+  return typeof tips === 'string' ? { content: tips } : tips
+}
 
 onMounted(() => {
   formItems.map((item) => {
-    item.initFn && item.initFn(item);
-    if (item.type === "input-tag" || item.type === "custom-tag") {
-      queryParams[item.prop] = item.initialValue ?? [];
-    } else if (item.type === "input-number") {
-      queryParams[item.prop] = item.initialValue ?? null;
+    item.initFn && item.initFn(item)
+    if (item.type === 'input-tag' || item.type === 'custom-tag') {
+      queryParams[item.prop] = item.initialValue ?? []
+    } else if (item.type === 'input-number') {
+      queryParams[item.prop] = item.initialValue ?? null
     } else {
-      queryParams[item.prop] = item.initialValue ?? "";
+      queryParams[item.prop] = item.initialValue ?? ''
     }
-  });
-});
+  })
+})
 
 // 查询/重置操作
-const handleQuery = () => emit("queryClick", queryParams);
+const handleQuery = () => emit('queryClick', queryParams)
 const handleReset = () => {
-  queryFormRef.value?.resetFields();
-  emit("resetClick", queryParams);
-};
+  queryFormRef.value?.resetFields()
+  emit('resetClick', queryParams)
+}
 
 // 暴露的属性和方法
 defineExpose({
@@ -135,7 +135,7 @@ defineExpose({
   getQueryParams: () => queryParams,
   // 显示/隐藏 SearchForm
   toggleVisible: () => (visible.value = !visible.value),
-});
+})
 </script>
 
 <style lang="scss" scoped>

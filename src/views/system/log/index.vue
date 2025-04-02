@@ -56,48 +56,48 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Log",
+  name: 'Log',
   inheritAttrs: false,
-});
+})
 
-import LogAPI, { LogPageVO, LogPageQuery } from "@/api/system/log.api";
+import LogAPI, { LogPageVO, LogPageQuery } from '@/api/system/log.api'
 
-const queryFormRef = ref();
+const queryFormRef = ref()
 
-const loading = ref(false);
-const total = ref(0);
+const loading = ref(false)
+const total = ref(0)
 
 const queryParams = reactive<LogPageQuery>({
   pageNum: 1,
   pageSize: 10,
-  keywords: "",
-  createTime: ["", ""],
-});
+  keywords: '',
+  createTime: ['', ''],
+})
 
 // 日志表格数据
-const pageData = ref<LogPageVO[]>();
+const pageData = ref<LogPageVO[]>()
 
 /** 查询 */
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   LogAPI.getPage(queryParams)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+      pageData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 /** 重置查询 */
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  queryParams.createTime = undefined;
-  handleQuery();
+  queryFormRef.value.resetFields()
+  queryParams.pageNum = 1
+  queryParams.createTime = undefined
+  handleQuery()
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>

@@ -97,84 +97,84 @@
 </template>
 
 <script setup lang="ts">
-import { useStomp } from "@/hooks/useStomp";
-import { useUserStoreHook } from "@/store/modules/user.store";
+import { useStomp } from '@/hooks/useStomp'
+import { useUserStoreHook } from '@/store/modules/user.store'
 
-const userStore = useUserStoreHook();
+const userStore = useUserStoreHook()
 // 用于手动调整 WebSocket 地址
-const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT);
+const socketEndpoint = ref(import.meta.env.VITE_APP_WS_ENDPOINT)
 // 同步连接状态
 interface MessageType {
-  type?: string;
-  sender?: string;
-  content: string;
+  type?: string
+  sender?: string
+  content: string
 }
-const messages = ref<MessageType[]>([]);
+const messages = ref<MessageType[]>([])
 // 广播消息内容
-const topicMessage = ref("亲爱的朋友们，系统已恢复最新状态。");
+const topicMessage = ref('亲爱的朋友们，系统已恢复最新状态。')
 // 点对点消息内容（默认示例）
-const queneMessage = ref("Hi, " + userStore.userInfo.username + " 这里是点对点消息示例！");
-const receiver = ref("root");
+const queneMessage = ref('Hi, ' + userStore.userInfo.username + ' 这里是点对点消息示例！')
+const receiver = ref('root')
 
 // 调用 useStomp hook，默认使用 socketEndpoint 和 token（此处用 getAccessToken()）
 const { isConnected, connect, subscribe, disconnect, client } = useStomp({
   debug: true,
-});
+})
 
 watch(
   () => isConnected.value,
   (connected) => {
     if (connected) {
       // 连接成功后，订阅广播和点对点消息主题
-      subscribe("/topic/notice", (res) => {
+      subscribe('/topic/notice', (res) => {
         messages.value.push({
-          sender: "Server",
+          sender: 'Server',
           content: res.body,
-        });
-      });
-      subscribe("/user/queue/greeting", (res) => {
-        const messageData = JSON.parse(res.body) as MessageType;
+        })
+      })
+      subscribe('/user/queue/greeting', (res) => {
+        const messageData = JSON.parse(res.body) as MessageType
         messages.value.push({
           sender: messageData.sender,
           content: messageData.content,
-        });
-      });
+        })
+      })
       messages.value.push({
-        sender: "Server",
-        content: "Websocket 已连接",
-        type: "tip",
-      });
+        sender: 'Server',
+        content: 'Websocket 已连接',
+        type: 'tip',
+      })
     } else {
       messages.value.push({
-        sender: "Server",
-        content: "Websocket 已断开",
-        type: "tip",
-      });
+        sender: 'Server',
+        content: 'Websocket 已断开',
+        type: 'tip',
+      })
     }
-  }
-);
+  },
+)
 
 // 连接 WebSocket
 function connectWebSocket() {
-  connect();
+  connect()
 }
 
 // 断开 WebSocket
 function disconnectWebSocket() {
-  disconnect();
+  disconnect()
 }
 
 // 发送广播消息
 function sendToAll() {
   if (client.value && client.value.connected) {
     client.value.publish({
-      destination: "/topic/notice",
+      destination: '/topic/notice',
       body: topicMessage.value,
-    });
+    })
     messages.value.push({
       sender: userStore.userInfo.username,
       content: topicMessage.value,
-    });
+    })
   }
 }
 
@@ -182,23 +182,23 @@ function sendToAll() {
 function sendToUser() {
   if (client.value && client.value.connected) {
     client.value.publish({
-      destination: "/app/sendToUser/" + receiver.value,
+      destination: '/app/sendToUser/' + receiver.value,
       body: queneMessage.value,
-    });
+    })
     messages.value.push({
       sender: userStore.userInfo.username,
       content: queneMessage.value,
-    });
+    })
   }
 }
 
 onMounted(() => {
-  connectWebSocket();
-});
+  connectWebSocket()
+})
 
 onBeforeUnmount(() => {
-  disconnectWebSocket();
-});
+  disconnectWebSocket()
+})
 </script>
 
 <style scoped lang="scss">

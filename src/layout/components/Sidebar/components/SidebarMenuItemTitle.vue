@@ -14,15 +14,15 @@
 </template>
 
 <script setup lang="ts">
-import { translateRouteTitle } from "@/utils/i18n";
+import { translateRouteTitle } from '@/utils/i18n'
 
 const props = defineProps<{
-  icon?: string;
-  title?: string;
-}>();
+  icon?: string
+  title?: string
+}>()
 
-const isElIcon = computed(() => props.icon?.startsWith("el-icon"));
-const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
+const isElIcon = computed(() => props.icon?.startsWith('el-icon'))
+const iconComponent = computed(() => props.icon?.replace('el-icon-', ''))
 </script>
 
 <style lang="scss" scoped>
@@ -32,7 +32,7 @@ const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
   color: currentcolor;
 }
 
-[class^="i-svg:"] {
+[class^='i-svg:'] {
   width: 14px;
   height: 14px;
   color: currentcolor !important;
@@ -46,7 +46,7 @@ const iconComponent = computed(() => props.icon?.replace("el-icon-", ""));
     }
   }
 
-  [class^="i-svg:"] {
+  [class^='i-svg:'] {
     margin-left: 20px;
   }
 }

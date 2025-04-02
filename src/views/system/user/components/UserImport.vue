@@ -89,111 +89,111 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessage, type UploadUserFile } from "element-plus";
-import UserAPI from "@/api/system/user.api";
-import { ResultEnum } from "@/enums/api/result.enum";
+import { ElMessage, type UploadUserFile } from 'element-plus'
+import UserAPI from '@/api/system/user.api'
+import { ResultEnum } from '@/enums/api/result.enum'
 
-const emit = defineEmits(["import-success"]);
-const visible = defineModel("modelValue", {
+const emit = defineEmits(['import-success'])
+const visible = defineModel('modelValue', {
   type: Boolean,
   required: true,
   default: false,
-});
+})
 
-const resultVisible = ref(false);
-const resultData = ref<string[]>([]);
-const invalidCount = ref(0);
-const validCount = ref(0);
+const resultVisible = ref(false)
+const resultData = ref<string[]>([])
+const invalidCount = ref(0)
+const validCount = ref(0)
 
-const importFormRef = ref(null);
-const uploadRef = ref(null);
+const importFormRef = ref(null)
+const uploadRef = ref(null)
 
 const importFormData = reactive<{
-  files: UploadUserFile[];
+  files: UploadUserFile[]
 }>({
   files: [],
-});
+})
 
 watch(visible, (newValue) => {
   if (newValue) {
-    resultData.value = [];
-    resultVisible.value = false;
-    invalidCount.value = 0;
-    validCount.value = 0;
+    resultData.value = []
+    resultVisible.value = false
+    invalidCount.value = 0
+    validCount.value = 0
   }
-});
+})
 
 const importFormRules = {
-  files: [{ required: true, message: "文件不能为空", trigger: "blur" }],
-};
+  files: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
+}
 
 // 文件超出个数限制
 const handleFileExceed = () => {
-  ElMessage.warning("只能上传一个文件");
-};
+  ElMessage.warning('只能上传一个文件')
+}
 
 // 下载导入模板
 const handleDownloadTemplate = () => {
   UserAPI.downloadTemplate().then((response: any) => {
-    const fileData = response.data;
-    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+    const fileData = response.data
+    const fileName = decodeURI(response.headers['content-disposition'].split(';')[1].split('=')[1])
     const fileType =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
 
-    const blob = new Blob([fileData], { type: fileType });
-    const downloadUrl = window.URL.createObjectURL(blob);
+    const blob = new Blob([fileData], { type: fileType })
+    const downloadUrl = window.URL.createObjectURL(blob)
 
-    const downloadLink = document.createElement("a");
-    downloadLink.href = downloadUrl;
-    downloadLink.download = fileName;
+    const downloadLink = document.createElement('a')
+    downloadLink.href = downloadUrl
+    downloadLink.download = fileName
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
 
-    document.body.removeChild(downloadLink);
-    window.URL.revokeObjectURL(downloadUrl);
-  });
-};
+    document.body.removeChild(downloadLink)
+    window.URL.revokeObjectURL(downloadUrl)
+  })
+}
 
 // 上传文件
 const handleUpload = async () => {
   if (!importFormData.files.length) {
-    ElMessage.warning("请选择文件");
-    return;
+    ElMessage.warning('请选择文件')
+    return
   }
 
   try {
-    const result = await UserAPI.import(1, importFormData.files[0].raw as File);
+    const result = await UserAPI.import(1, importFormData.files[0].raw as File)
     if (result.code === ResultEnum.SUCCESS && result.invalidCount === 0) {
-      ElMessage.success("导入成功，导入数据：" + result.validCount + "条");
-      emit("import-success");
-      handleClose();
+      ElMessage.success('导入成功，导入数据：' + result.validCount + '条')
+      emit('import-success')
+      handleClose()
     } else {
-      ElMessage.error("上传失败");
-      resultVisible.value = true;
-      resultData.value = result.messageList;
-      invalidCount.value = result.invalidCount;
-      validCount.value = result.validCount;
+      ElMessage.error('上传失败')
+      resultVisible.value = true
+      resultData.value = result.messageList
+      invalidCount.value = result.invalidCount
+      validCount.value = result.validCount
     }
   } catch (error: any) {
-    console.error(error);
-    ElMessage.error("上传失败：" + error);
+    console.error(error)
+    ElMessage.error('上传失败：' + error)
   }
-};
+}
 
 // 显示错误信息
 const handleShowResult = () => {
-  resultVisible.value = true;
-};
+  resultVisible.value = true
+}
 
 // 关闭错误信息弹窗
 const handleCloseResult = () => {
-  resultVisible.value = false;
-};
+  resultVisible.value = false
+}
 
 // 关闭弹窗
 const handleClose = () => {
-  importFormData.files.length = 0;
-  visible.value = false;
-};
+  importFormData.files.length = 0
+  visible.value = false
+}
 </script>

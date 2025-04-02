@@ -36,61 +36,61 @@
 </template>
 
 <script setup lang="ts">
-import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 defineOptions({
-  name: "Icons",
+  name: 'Icons',
   inheritAttrs: false,
-});
+})
 const svg_icons: string[] = [
-  "api",
-  "cascader",
-  "client",
-  "close",
-  "close_all",
-  "close_left",
-  "close_other",
-  "close_right",
-  "dict",
-  "document",
-  "download",
-  "drag",
-  "edit",
-  "exit-fullscreen",
-  "eye-open",
-  "eye",
-  "fullscreen",
-  "github",
-  "homepage",
-  "language",
-  "link",
-  "menu",
-  "message",
-  "money",
-  "monitor",
-  "order",
-  "password",
-  "peoples",
-  "perm",
-  "publish",
-  "role",
-  "security",
-  "size",
-  "skill",
-  "system",
-  "tree",
-  "user",
-  "uv",
-  "verify-code",
-];
-const icons = ref(ElementPlusIconsVue);
+  'api',
+  'cascader',
+  'client',
+  'close',
+  'close_all',
+  'close_left',
+  'close_other',
+  'close_right',
+  'dict',
+  'document',
+  'download',
+  'drag',
+  'edit',
+  'exit-fullscreen',
+  'eye-open',
+  'eye',
+  'fullscreen',
+  'github',
+  'homepage',
+  'language',
+  'link',
+  'menu',
+  'message',
+  'money',
+  'monitor',
+  'order',
+  'password',
+  'peoples',
+  'perm',
+  'publish',
+  'role',
+  'security',
+  'size',
+  'skill',
+  'system',
+  'tree',
+  'user',
+  'uv',
+  'verify-code',
+]
+const icons = ref(ElementPlusIconsVue)
 
 function generateIconCode(symbol: any) {
-  return `<div class="i-svg:${symbol}" />`;
+  return `<div class="i-svg:${symbol}" />`
 }
 
 function generateElementIconCode(symbol: any) {
-  return `<el-icon><${symbol} /></el-icon>`;
+  return `<el-icon><${symbol} /></el-icon>`
 }
 </script>
 

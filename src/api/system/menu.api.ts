@@ -1,6 +1,6 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 // 菜单基础URL
-const MENU_BASE_URL = "/api/v1/menus";
+const MENU_BASE_URL = '/api/v1/menus'
 
 const MenuAPI = {
   /**
@@ -13,8 +13,8 @@ const MenuAPI = {
   getRoutes() {
     return request<any, RouteVO[]>({
       url: `${MENU_BASE_URL}/routes`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -26,9 +26,9 @@ const MenuAPI = {
   getList(queryParams: MenuQuery) {
     return request<any, MenuVO[]>({
       url: `${MENU_BASE_URL}`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
 
   /**
@@ -39,9 +39,9 @@ const MenuAPI = {
   getOptions(onlyParent?: boolean) {
     return request<any, OptionType[]>({
       url: `${MENU_BASE_URL}/options`,
-      method: "get",
+      method: 'get',
       params: { onlyParent: onlyParent },
-    });
+    })
   },
 
   /**
@@ -52,8 +52,8 @@ const MenuAPI = {
   getFormData(id: string) {
     return request<any, MenuForm>({
       url: `${MENU_BASE_URL}/${id}/form`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -65,9 +65,9 @@ const MenuAPI = {
   create(data: MenuForm) {
     return request({
       url: `${MENU_BASE_URL}`,
-      method: "post",
+      method: 'post',
       data: data,
-    });
+    })
   },
 
   /**
@@ -80,9 +80,9 @@ const MenuAPI = {
   update(id: string, data: MenuForm) {
     return request({
       url: `${MENU_BASE_URL}/${id}`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -94,116 +94,116 @@ const MenuAPI = {
   deleteById(id: number) {
     return request({
       url: `${MENU_BASE_URL}/${id}`,
-      method: "delete",
-    });
+      method: 'delete',
+    })
   },
-};
+}
 
-export default MenuAPI;
+export default MenuAPI
 
-import type { MenuTypeEnum } from "@/enums/system/menu.enum";
+import type { MenuTypeEnum } from '@/enums/system/menu.enum'
 
 /** 菜单查询参数 */
 export interface MenuQuery {
   /** 搜索关键字 */
-  keywords?: string;
+  keywords?: string
 }
 
 /** 菜单视图对象 */
 export interface MenuVO {
   /** 子菜单 */
-  children?: MenuVO[];
+  children?: MenuVO[]
   /** 组件路径 */
-  component?: string;
+  component?: string
   /** ICON */
-  icon?: string;
+  icon?: string
   /** 菜单ID */
-  id?: string;
+  id?: string
   /** 菜单名称 */
-  name?: string;
+  name?: string
   /** 父菜单ID */
-  parentId?: string;
+  parentId?: string
   /** 按钮权限标识 */
-  perm?: string;
+  perm?: string
   /** 跳转路径 */
-  redirect?: string;
+  redirect?: string
   /** 路由名称 */
-  routeName?: string;
+  routeName?: string
   /** 路由相对路径 */
-  routePath?: string;
+  routePath?: string
   /** 菜单排序(数字越小排名越靠前) */
-  sort?: number;
+  sort?: number
   /** 菜单 */
-  type?: MenuTypeEnum;
+  type?: MenuTypeEnum
   /** 菜单是否可见(1:显示;0:隐藏) */
-  visible?: number;
+  visible?: number
 }
 
 /** 菜单表单对象 */
 export interface MenuForm {
   /** 菜单ID */
-  id?: string;
+  id?: string
   /** 父菜单ID */
-  parentId?: string;
+  parentId?: string
   /** 菜单名称 */
-  name?: string;
+  name?: string
   /** 菜单是否可见(1-是 0-否) */
-  visible: number;
+  visible: number
   /** ICON */
-  icon?: string;
+  icon?: string
   /** 排序 */
-  sort?: number;
+  sort?: number
   /** 路由名称 */
-  routeName?: string;
+  routeName?: string
   /** 路由路径 */
-  routePath?: string;
+  routePath?: string
   /** 组件路径 */
-  component?: string;
+  component?: string
   /** 跳转路由路径 */
-  redirect?: string;
+  redirect?: string
   /** 菜单 */
-  type?: MenuTypeEnum;
+  type?: MenuTypeEnum
   /** 权限标识 */
-  perm?: string;
+  perm?: string
   /** 【菜单】是否开启页面缓存 */
-  keepAlive?: number;
+  keepAlive?: number
   /** 【目录】只有一个子路由是否始终显示 */
-  alwaysShow?: number;
+  alwaysShow?: number
   /** 参数 */
-  params?: KeyValue[];
+  params?: KeyValue[]
 }
 
 interface KeyValue {
-  key: string;
-  value: string;
+  key: string
+  value: string
 }
 
 /** RouteVO，路由对象 */
 export interface RouteVO {
   /** 子路由列表 */
-  children: RouteVO[];
+  children: RouteVO[]
   /** 组件路径 */
-  component?: string;
+  component?: string
   /** 路由属性 */
-  meta?: Meta;
+  meta?: Meta
   /** 路由名称 */
-  name?: string;
+  name?: string
   /** 路由路径 */
-  path?: string;
+  path?: string
   /** 跳转链接 */
-  redirect?: string;
+  redirect?: string
 }
 
 /** Meta，路由属性 */
 export interface Meta {
   /** 【目录】只有一个子路由是否始终显示 */
-  alwaysShow?: boolean;
+  alwaysShow?: boolean
   /** 是否隐藏(true-是 false-否) */
-  hidden?: boolean;
+  hidden?: boolean
   /** ICON */
-  icon?: string;
+  icon?: string
   /** 【菜单】是否开启页面缓存 */
-  keepAlive?: boolean;
+  keepAlive?: boolean
   /** 路由title */
-  title?: string;
+  title?: string
 }

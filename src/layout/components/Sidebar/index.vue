@@ -21,19 +21,19 @@
 </template>
 
 <script setup lang="ts">
-import { LayoutMode } from "@/enums/settings/layout.enum";
-import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+import { LayoutMode } from '@/enums/settings/layout.enum'
+import { useSettingsStore, usePermissionStore, useAppStore } from '@/store'
 
-import NavbarRight from "../NavBar/components/NavbarRight.vue";
+import NavbarRight from '../NavBar/components/NavbarRight.vue'
 
-const appStore = useAppStore();
-const settingsStore = useSettingsStore();
-const permissionStore = usePermissionStore();
+const appStore = useAppStore()
+const settingsStore = useSettingsStore()
+const permissionStore = usePermissionStore()
 
-const sidebarLogo = computed(() => settingsStore.sidebarLogo);
-const layout = computed(() => settingsStore.layout);
+const sidebarLogo = computed(() => settingsStore.sidebarLogo)
+const layout = computed(() => settingsStore.layout)
 
-const isSidebarCollapsed = computed(() => !appStore.sidebar.opened);
+const isSidebarCollapsed = computed(() => !appStore.sidebar.opened)
 </script>
 
 <style lang="scss" scoped>

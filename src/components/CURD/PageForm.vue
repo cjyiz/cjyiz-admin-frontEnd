@@ -81,76 +81,76 @@
 </template>
 
 <script setup lang="ts">
-import type { FormInstance, FormRules } from "element-plus";
-import { reactive, ref, watch, watchEffect } from "vue";
-import { IObject, IPageForm } from "./types";
+import type { FormInstance, FormRules } from 'element-plus'
+import { reactive, ref, watch, watchEffect } from 'vue'
+import { IObject, IPageForm } from './types'
 
 // 定义接收的属性
 const props = withDefaults(defineProps<IPageForm>(), {
-  pk: "id",
-});
+  pk: 'id',
+})
 
-const formRef = ref<FormInstance>();
-const formItems = reactive(props.formItems);
-const formData = reactive<IObject>({});
-const formRules: FormRules = {};
-const prepareFuncs = [];
+const formRef = ref<FormInstance>()
+const formItems = reactive(props.formItems)
+const formData = reactive<IObject>({})
+const formRules: FormRules = {}
+const prepareFuncs = []
 for (const item of formItems) {
-  item.initFn && item.initFn(item);
-  formData[item.prop] = item.initialValue ?? "";
-  formRules[item.prop] = item.rules ?? [];
+  item.initFn && item.initFn(item)
+  formData[item.prop] = item.initialValue ?? ''
+  formRules[item.prop] = item.rules ?? []
 
   if (item.watch !== undefined) {
     prepareFuncs.push(() => {
       watch(
         () => formData[item.prop],
         (newValue, oldValue) => {
-          item.watch && item.watch(newValue, oldValue, formData, formItems);
-        }
-      );
-    });
+          item.watch && item.watch(newValue, oldValue, formData, formItems)
+        },
+      )
+    })
   }
 
   if (item.computed !== undefined) {
     prepareFuncs.push(() => {
       watchEffect(() => {
-        item.computed && (formData[item.prop] = item.computed(formData));
-      });
-    });
+        item.computed && (formData[item.prop] = item.computed(formData))
+      })
+    })
   }
 
   if (item.watchEffect !== undefined) {
     prepareFuncs.push(() => {
       watchEffect(() => {
-        item.watchEffect && item.watchEffect(formData);
-      });
-    });
+        item.watchEffect && item.watchEffect(formData)
+      })
+    })
   }
 }
-prepareFuncs.forEach((func) => func());
+prepareFuncs.forEach((func) => func())
 
 // 获取表单数据
 function getFormData(key?: string) {
-  return key === undefined ? formData : (formData[key] ?? undefined);
+  return key === undefined ? formData : (formData[key] ?? undefined)
 }
 
 // 设置表单值
 function setFormData(data: IObject) {
   for (const key in formData) {
     if (Object.prototype.hasOwnProperty.call(formData, key) && key in data) {
-      formData[key] = data[key];
+      formData[key] = data[key]
     }
   }
   if (Object.prototype.hasOwnProperty.call(data, props.pk)) {
-    formData[props.pk] = data[props.pk];
+    formData[props.pk] = data[props.pk]
   }
 }
 
 // 设置表单项值
 function setFormItemData(key: string, value: any) {
-  formData[key] = value;
+  formData[key] = value
 }
 
 // 暴露的属性和方法
-defineExpose({ formRef, getFormData, setFormData, setFormItemData });
+defineExpose({ formRef, getFormData, setFormData, setFormItemData })
 </script>

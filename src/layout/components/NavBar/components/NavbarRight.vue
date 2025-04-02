@@ -27,10 +27,10 @@
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item @click="handleProfileClick">
-            {{ $t("navbar.profile") }}
+            {{ $t('navbar.profile') }}
           </el-dropdown-item>
           <el-dropdown-item divided @click="logout">
-            {{ $t("navbar.logout") }}
+            {{ $t('navbar.logout') }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -43,60 +43,60 @@
   </div>
 </template>
 <script setup lang="ts">
-import defaultSettings from "@/settings";
-import { DeviceEnum } from "@/enums/settings/device.enum";
-import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from "@/store";
+import defaultSettings from '@/settings'
+import { DeviceEnum } from '@/enums/settings/device.enum'
+import { useAppStore, useSettingsStore, useUserStore, useTagsViewStore } from '@/store'
 
-import { SidebarColor, ThemeMode } from "@/enums/settings/theme.enum";
+import { SidebarColor, ThemeMode } from '@/enums/settings/theme.enum'
 
-const appStore = useAppStore();
-const settingStore = useSettingsStore();
-const userStore = useUserStore();
-const tagsViewStore = useTagsViewStore();
+const appStore = useAppStore()
+const settingStore = useSettingsStore()
+const userStore = useUserStore()
+const tagsViewStore = useTagsViewStore()
 
-const route = useRoute();
-const router = useRouter();
-const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
+const route = useRoute()
+const router = useRouter()
+const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP)
 
 /**
  * 打开个人中心页面
  */
 function handleProfileClick() {
-  router.push({ name: "Profile" });
+  router.push({ name: 'Profile' })
 }
 
 // 根据主题和侧边栏配色方案选择 navbar 右侧的样式类
 const navbarRightClass = computed(() => {
   // 如果暗黑主题
   if (settingStore.theme === ThemeMode.DARK) {
-    return "navbar__right--white";
+    return 'navbar__right--white'
   }
 
   // 如果侧边栏是经典蓝
   if (settingStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
-    return "navbar__right--white";
+    return 'navbar__right--white'
   }
-});
+})
 
 /**
  * 注销登录
  */
 function logout() {
-  ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
     lockScroll: false,
   }).then(() => {
     userStore
       .logout()
       .then(() => {
-        tagsViewStore.delAllViews();
+        tagsViewStore.delAllViews()
       })
       .then(() => {
-        router.push(`/login?redirect=${route.fullPath}`);
-      });
-  });
+        router.push(`/login?redirect=${route.fullPath}`)
+      })
+  })
 }
 </script>
 

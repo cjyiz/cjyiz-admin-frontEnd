@@ -37,16 +37,16 @@
 </template>
 
 <script lang="ts" setup>
-import path from "path-browserify";
-import type { MenuInstance } from "element-plus";
-import type { RouteRecordRaw } from "vue-router";
+import path from 'path-browserify'
+import type { MenuInstance } from 'element-plus'
+import type { RouteRecordRaw } from 'vue-router'
 
-import { LayoutMode } from "@/enums/settings/layout.enum";
-import { SidebarColor } from "@/enums/settings/theme.enum";
-import { useSettingsStore, useAppStore } from "@/store";
-import { isExternal } from "@/utils/index";
+import { LayoutMode } from '@/enums/settings/layout.enum'
+import { SidebarColor } from '@/enums/settings/theme.enum'
+import { useSettingsStore, useAppStore } from '@/store'
+import { isExternal } from '@/utils/index'
 
-import variables from "@/styles/variables.module.scss";
+import variables from '@/styles/variables.module.scss'
 
 const props = defineProps({
   data: {
@@ -56,28 +56,28 @@ const props = defineProps({
   basePath: {
     type: String,
     required: true,
-    example: "/system",
+    example: '/system',
   },
-});
+})
 
-const menuRef = ref<MenuInstance>();
-const settingsStore = useSettingsStore();
-const appStore = useAppStore();
-const currentRoute = useRoute();
+const menuRef = ref<MenuInstance>()
+const settingsStore = useSettingsStore()
+const appStore = useAppStore()
+const currentRoute = useRoute()
 
 // 存储已展开的菜单项索引
-const expandedMenuIndexes = ref<string[]>([]);
+const expandedMenuIndexes = ref<string[]>([])
 
 // 根据布局模式设置菜单的显示方式：顶部布局使用水平模式，其他使用垂直模式
 const menuMode = computed(() => {
-  return settingsStore.layout === LayoutMode.TOP ? "horizontal" : "vertical";
-});
+  return settingsStore.layout === LayoutMode.TOP ? 'horizontal' : 'vertical'
+})
 
 // 获取主题
-const theme = computed(() => settingsStore.theme);
+const theme = computed(() => settingsStore.theme)
 
 // 获取浅色主题下的侧边栏配色方案
-const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
+const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme)
 
 /**
  * 获取完整路径
@@ -87,14 +87,14 @@ const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
  */
 function resolveFullPath(routePath: string) {
   if (isExternal(routePath)) {
-    return routePath;
+    return routePath
   }
   if (isExternal(props.basePath)) {
-    return props.basePath;
+    return props.basePath
   }
 
   // 解析路径，生成完整的绝对路径
-  return path.resolve(props.basePath, routePath);
+  return path.resolve(props.basePath, routePath)
 }
 
 /**
@@ -103,8 +103,8 @@ function resolveFullPath(routePath: string) {
  * @param index 当前展开的菜单项索引
  */
 const onMenuOpen = (index: string) => {
-  expandedMenuIndexes.value.push(index);
-};
+  expandedMenuIndexes.value.push(index)
+}
 
 /**
  * 关闭菜单
@@ -112,8 +112,8 @@ const onMenuOpen = (index: string) => {
  * @param index 当前收起的菜单项索引
  */
 const onMenuClose = (index: string) => {
-  expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index);
-};
+  expandedMenuIndexes.value = expandedMenuIndexes.value.filter((item) => item !== index)
+}
 
 /**
  * 监听菜单模式变化：当菜单模式切换为水平模式时，关闭所有展开的菜单项，
@@ -124,9 +124,9 @@ const onMenuClose = (index: string) => {
 watch(
   () => menuMode.value,
   () => {
-    if (menuMode.value === "horizontal") {
-      expandedMenuIndexes.value.forEach((item) => menuRef.value!.close(item));
+    if (menuMode.value === 'horizontal') {
+      expandedMenuIndexes.value.forEach((item) => menuRef.value!.close(item))
     }
-  }
-);
+  },
+)
 </script>

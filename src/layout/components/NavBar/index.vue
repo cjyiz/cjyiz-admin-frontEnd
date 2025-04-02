@@ -12,16 +12,16 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store";
+import { useAppStore } from '@/store'
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
 // 侧边栏是否打开
-const isSidebarOpened = computed(() => appStore.sidebar.opened);
+const isSidebarOpened = computed(() => appStore.sidebar.opened)
 
 // 展开/收缩菜单
 function toggleSideBar() {
-  appStore.toggleSidebar();
+  appStore.toggleSidebar()
 }
 </script>
 

@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: "Page404" });
-const router = useRouter();
-const back = () => router.push("/");
+defineOptions({ name: 'Page404' })
+const router = useRouter()
+const back = () => router.push('/')
 </script>
 
 <style lang="scss" scoped>

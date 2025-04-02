@@ -154,57 +154,57 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Dept",
+  name: 'Dept',
   inheritAttrs: false,
-});
+})
 
-import DeptAPI, { DeptVO, DeptForm, DeptQuery } from "@/api/system/dept.api";
+import DeptAPI, { DeptVO, DeptForm, DeptQuery } from '@/api/system/dept.api'
 
-const queryFormRef = ref();
-const deptFormRef = ref();
+const queryFormRef = ref()
+const deptFormRef = ref()
 
-const loading = ref(false);
-const selectIds = ref<number[]>([]);
-const queryParams = reactive<DeptQuery>({});
+const loading = ref(false)
+const selectIds = ref<number[]>([])
+const queryParams = reactive<DeptQuery>({})
 
 const dialog = reactive({
-  title: "",
+  title: '',
   visible: false,
-});
+})
 
-const deptList = ref<DeptVO[]>();
-const deptOptions = ref<OptionType[]>();
+const deptList = ref<DeptVO[]>()
+const deptOptions = ref<OptionType[]>()
 const formData = reactive<DeptForm>({
   status: 1,
-  parentId: "0",
+  parentId: '0',
   sort: 1,
-});
+})
 
 const rules = reactive({
-  parentId: [{ required: true, message: "上级部门不能为空", trigger: "change" }],
-  name: [{ required: true, message: "部门名称不能为空", trigger: "blur" }],
-  code: [{ required: true, message: "部门编号不能为空", trigger: "blur" }],
-  sort: [{ required: true, message: "显示排序不能为空", trigger: "blur" }],
-});
+  parentId: [{ required: true, message: '上级部门不能为空', trigger: 'change' }],
+  name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
+  code: [{ required: true, message: '部门编号不能为空', trigger: 'blur' }],
+  sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
+})
 
 // 查询部门
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   DeptAPI.getList(queryParams).then((data) => {
-    deptList.value = data;
-    loading.value = false;
-  });
+    deptList.value = data
+    loading.value = false
+  })
 }
 
 // 重置查询
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  handleQuery();
+  queryFormRef.value.resetFields()
+  handleQuery()
 }
 
 // 处理选中项变化
 function handleSelectionChange(selection: any) {
-  selectIds.value = selection.map((item: any) => item.id);
+  selectIds.value = selection.map((item: any) => item.id)
 }
 
 /**
@@ -215,24 +215,24 @@ function handleSelectionChange(selection: any) {
  */
 async function handleOpenDialog(parentId?: string, deptId?: number) {
   // 加载部门下拉数据
-  const data = await DeptAPI.getOptions();
+  const data = await DeptAPI.getOptions()
   deptOptions.value = [
     {
-      value: "0",
-      label: "顶级部门",
+      value: '0',
+      label: '顶级部门',
       children: data,
     },
-  ];
+  ]
 
-  dialog.visible = true;
+  dialog.visible = true
   if (deptId) {
-    dialog.title = "修改部门";
+    dialog.title = '修改部门'
     DeptAPI.getFormData(deptId).then((data) => {
-      Object.assign(formData, data);
-    });
+      Object.assign(formData, data)
+    })
   } else {
-    dialog.title = "新增部门";
-    formData.parentId = parentId || "0";
+    dialog.title = '新增部门'
+    formData.parentId = parentId || '0'
   }
 }
 
@@ -240,76 +240,76 @@ async function handleOpenDialog(parentId?: string, deptId?: number) {
 function handleSubmit() {
   deptFormRef.value.validate((valid: any) => {
     if (valid) {
-      loading.value = true;
-      const deptId = formData.id;
+      loading.value = true
+      const deptId = formData.id
       if (deptId) {
         DeptAPI.update(deptId, formData)
           .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleQuery();
+            ElMessage.success('修改成功')
+            handleCloseDialog()
+            handleQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       } else {
         DeptAPI.create(formData)
           .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleQuery();
+            ElMessage.success('新增成功')
+            handleCloseDialog()
+            handleQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       }
     }
-  });
+  })
 }
 
 // 删除部门
 function handleDelete(deptId?: number) {
-  const deptIds = [deptId || selectIds.value].join(",");
+  const deptIds = [deptId || selectIds.value].join(',')
 
   if (!deptIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
+    ElMessage.warning('请勾选删除项')
+    return
   }
 
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(
     () => {
-      loading.value = true;
+      loading.value = true
       DeptAPI.deleteByIds(deptIds)
         .then(() => {
-          ElMessage.success("删除成功");
-          handleResetQuery();
+          ElMessage.success('删除成功')
+          handleResetQuery()
         })
-        .finally(() => (loading.value = false));
+        .finally(() => (loading.value = false))
     },
     () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+      ElMessage.info('已取消删除')
+    },
+  )
 }
 
 // 重置表单
 function resetForm() {
-  deptFormRef.value.resetFields();
-  deptFormRef.value.clearValidate();
+  deptFormRef.value.resetFields()
+  deptFormRef.value.clearValidate()
 
-  formData.id = undefined;
-  formData.parentId = "0";
-  formData.status = 1;
-  formData.sort = 1;
+  formData.id = undefined
+  formData.parentId = '0'
+  formData.status = 1
+  formData.sort = 1
 }
 
 // 关闭弹窗
 function handleCloseDialog() {
-  dialog.visible = false;
-  resetForm();
+  dialog.visible = false
+  resetForm()
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>

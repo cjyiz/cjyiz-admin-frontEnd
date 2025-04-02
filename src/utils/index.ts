@@ -5,7 +5,7 @@
  * @returns {boolean}
  */
 export function hasClass(ele: HTMLElement, cls: string) {
-  return !!ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+  return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
 }
 
 /**
@@ -14,7 +14,7 @@ export function hasClass(ele: HTMLElement, cls: string) {
  * @param {string} cls
  */
 export function addClass(ele: HTMLElement, cls: string) {
-  if (!hasClass(ele, cls)) ele.className += " " + cls;
+  if (!hasClass(ele, cls)) ele.className += ' ' + cls
 }
 
 /**
@@ -24,8 +24,8 @@ export function addClass(ele: HTMLElement, cls: string) {
  */
 export function removeClass(ele: HTMLElement, cls: string) {
   if (hasClass(ele, cls)) {
-    const reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
-    ele.className = ele.className.replace(reg, " ");
+    const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
+    ele.className = ele.className.replace(reg, ' ')
   }
 }
 
@@ -36,8 +36,8 @@ export function removeClass(ele: HTMLElement, cls: string) {
  * @returns {Boolean}
  */
 export function isExternal(path: string) {
-  const isExternal = /^(https?:|http?:|mailto:|tel:)/.test(path);
-  return isExternal;
+  const isExternal = /^(https?:|http?:|mailto:|tel:)/.test(path)
+  return isExternal
 }
 
 /**
@@ -48,11 +48,11 @@ export function isExternal(path: string) {
  */
 export function formatGrowthRate(growthRate: number) {
   if (growthRate === 0) {
-    return "-";
+    return '-'
   }
 
   const formattedRate = Math.abs(growthRate * 100)
     .toFixed(2)
-    .replace(/\.?0+$/, "");
-  return formattedRate + "%";
+    .replace(/\.?0+$/, '')
+  return formattedRate + '%'
 }

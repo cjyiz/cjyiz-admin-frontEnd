@@ -13,18 +13,18 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore, useTagsViewStore } from "@/store";
-import variables from "@/styles/variables.module.scss";
+import { useSettingsStore, useTagsViewStore } from '@/store'
+import variables from '@/styles/variables.module.scss'
 
 // 缓存页面集合
-const cachedViews = computed(() => useTagsViewStore().cachedViews);
+const cachedViews = computed(() => useTagsViewStore().cachedViews)
 const appMainHeight = computed(() => {
   if (useSettingsStore().tagsView) {
-    return `calc(100vh - ${variables["navbar-height"]} - ${variables["tags-view-height"]})`;
+    return `calc(100vh - ${variables['navbar-height']} - ${variables['tags-view-height']})`
   } else {
-    return `calc(100vh - ${variables["navbar-height"]})`;
+    return `calc(100vh - ${variables['navbar-height']})`
   }
-});
+})
 </script>
 
 <style lang="scss" scoped>

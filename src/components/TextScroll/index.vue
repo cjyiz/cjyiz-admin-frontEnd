@@ -41,55 +41,55 @@
 </template>
 
 <script setup lang="ts">
-import { useElementHover } from "@vueuse/core";
+import { useElementHover } from '@vueuse/core'
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(['close'])
 
 interface Props {
   /** 滚动文本内容（必填） */
-  text: string;
+  text: string
   /** 滚动速度，数值越小滚动越慢 */
-  speed?: number;
+  speed?: number
   /** 滚动方向：左侧或右侧 */
-  direction?: "left" | "right";
+  direction?: 'left' | 'right'
   /** 样式类型 */
-  type?: "default" | "success" | "warning" | "danger" | "info";
+  type?: 'default' | 'success' | 'warning' | 'danger' | 'info'
   /** 是否显示关闭按钮 */
-  showClose?: boolean;
+  showClose?: boolean
   /** 是否启用打字机效果 */
-  typewriter?: boolean;
+  typewriter?: boolean
   /** 打字机效果的速度，数值越小打字越快 */
-  typewriterSpeed?: number;
+  typewriterSpeed?: number
 }
 
 // 定义组件属性及默认值
 const props = withDefaults(defineProps<Props>(), {
   speed: 70,
-  direction: "left",
-  type: "default",
+  direction: 'left',
+  type: 'default',
   showClose: false,
   typewriter: false,
   typewriterSpeed: 100,
-});
+})
 
 // 容器元素引用
-const containerRef = ref<HTMLElement | null>(null);
+const containerRef = ref<HTMLElement | null>(null)
 // 使用 vueuse 的 useElementHover 检测鼠标悬停状态
-const isHovered = useElementHover(containerRef);
+const isHovered = useElementHover(containerRef)
 // 滚动内容元素引用
-const scrollContent = ref<HTMLElement | null>(null);
+const scrollContent = ref<HTMLElement | null>(null)
 // 动画持续时间（秒）
-const animationDuration = ref(0);
+const animationDuration = ref(0)
 
 /**
  * 打字机效果相关状态
  */
 // 当前已显示的文本内容
-const currentText = ref("");
+const currentText = ref('')
 // 打字机定时器引用，用于清理
-let typewriterTimer: ReturnType<typeof setTimeout> | null = null;
+let typewriterTimer: ReturnType<typeof setTimeout> | null = null
 // 打字机效果是否已完成
-const isTypewriterComplete = ref(false);
+const isTypewriterComplete = ref(false)
 
 /**
  * 计算是否应该滚动
@@ -99,10 +99,10 @@ const isTypewriterComplete = ref(false);
  */
 const shouldScroll = computed(() => {
   if (props.typewriter) {
-    return !isHovered.value && isTypewriterComplete.value;
+    return !isHovered.value && isTypewriterComplete.value
   }
-  return !isHovered.value;
-});
+  return !isHovered.value
+})
 
 /**
  * 计算最终显示的内容
@@ -110,7 +110,7 @@ const shouldScroll = computed(() => {
  * 否则直接显示完整文本
  * 注意：内容支持 HTML，使用时需注意 XSS 风险
  */
-const sanitizedContent = computed(() => (props.typewriter ? currentText.value : props.text));
+const sanitizedContent = computed(() => (props.typewriter ? currentText.value : props.text))
 
 /**
  * 计算滚动样式
@@ -118,10 +118,10 @@ const sanitizedContent = computed(() => (props.typewriter ? currentText.value : 
  * 这些值通过 CSS 变量传递给样式
  */
 const scrollStyle = computed(() => ({
-  "--animation-duration": `${animationDuration.value}s`,
-  "--animation-play-state": shouldScroll.value ? "running" : "paused",
-  "--animation-direction": props.direction === "left" ? "normal" : "reverse",
-}));
+  '--animation-duration': `${animationDuration.value}s`,
+  '--animation-play-state': shouldScroll.value ? 'running' : 'paused',
+  '--animation-direction': props.direction === 'left' ? 'normal' : 'reverse',
+}))
 
 /**
  * 计算动画持续时间
@@ -130,71 +130,71 @@ const scrollStyle = computed(() => ({
  */
 const calculateDuration = () => {
   if (scrollContent.value) {
-    const contentWidth = scrollContent.value.scrollWidth / 2;
-    animationDuration.value = contentWidth / props.speed;
+    const contentWidth = scrollContent.value.scrollWidth / 2
+    animationDuration.value = contentWidth / props.speed
   }
-};
+}
 
 /**
  * 处理关闭按钮点击事件
  * 触发 close 事件，并直接销毁当前组件
  */
 const handleRightIconClick = () => {
-  emit("close");
+  emit('close')
   // 获取当前组件的DOM元素
   if (containerRef.value) {
     // 从DOM中移除元素
-    containerRef.value.remove();
+    containerRef.value.remove()
   }
-};
+}
 
 /**
  * 启动打字机效果
  * 逐字显示文本内容，完成后设置状态以开始滚动
  */
 const startTypewriter = () => {
-  let index = 0;
-  currentText.value = "";
-  isTypewriterComplete.value = false; // 重置状态
+  let index = 0
+  currentText.value = ''
+  isTypewriterComplete.value = false // 重置状态
 
   // 递归函数，逐字添加文本
   const type = () => {
     if (index < props.text.length) {
       // 添加一个字符
-      currentText.value += props.text[index];
-      index++;
+      currentText.value += props.text[index]
+      index++
       // 设置下一个字符的延迟
-      typewriterTimer = setTimeout(type, props.typewriterSpeed);
+      typewriterTimer = setTimeout(type, props.typewriterSpeed)
     } else {
       // 所有字符都已添加，设置完成状态
-      isTypewriterComplete.value = true;
+      isTypewriterComplete.value = true
     }
-  };
+  }
 
   // 开始打字过程
-  type();
-};
+  type()
+}
 
 onMounted(() => {
   // 计算初始动画持续时间
-  calculateDuration();
+  calculateDuration()
   // 监听窗口大小变化，重新计算动画持续时间
-  window.addEventListener("resize", calculateDuration);
+  window.addEventListener('resize', calculateDuration)
 
   // 如果启用了打字机效果，开始打字
   if (props.typewriter) {
-    startTypewriter();
+    startTypewriter()
   }
-});
+})
 
 onUnmounted(() => {
   // 移除事件监听
-  window.removeEventListener("resize", calculateDuration);
+  window.removeEventListener('resize', calculateDuration)
   // 清除打字机定时器
   if (typewriterTimer) {
-    clearTimeout(typewriterTimer);
+    clearTimeout(typewriterTimer)
   }
-});
+})
 
 /**
  * 监听文本内容变化
@@ -206,13 +206,13 @@ watch(
     if (props.typewriter) {
       // 清除现有定时器
       if (typewriterTimer) {
-        clearTimeout(typewriterTimer);
+        clearTimeout(typewriterTimer)
       }
       // 重新开始打字效果
-      startTypewriter();
+      startTypewriter()
     }
-  }
-);
+  },
+)
 </script>
 
 <style scoped lang="scss">
@@ -386,7 +386,7 @@ watch(
 // 添加打字机效果的光标样式
 .text-scroll-content .scroll-item {
   &::after {
-    content: "";
+    content: '';
     opacity: 0;
     animation: none;
   }
@@ -394,7 +394,7 @@ watch(
 
 // 仅在启用打字机效果时显示光标
 .text-scroll-container[typewriter] .text-scroll-content .scroll-item::after {
-  content: "|";
+  content: '|';
   opacity: 0;
   animation: cursor 1s infinite;
 }

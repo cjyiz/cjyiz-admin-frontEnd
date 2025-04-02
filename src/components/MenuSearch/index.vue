@@ -76,113 +76,113 @@
 </template>
 
 <script setup lang="ts">
-import router from "@/router";
-import { usePermissionStore } from "@/store";
-import { isExternal } from "@/utils";
-import { RouteRecordRaw } from "vue-router";
+import router from '@/router'
+import { usePermissionStore } from '@/store'
+import { isExternal } from '@/utils'
+import { RouteRecordRaw } from 'vue-router'
 
-const permissionStore = usePermissionStore();
-const isModalVisible = ref(false);
-const searchKeyword = ref("");
-const searchInputRef = ref();
-const excludedRoutes = ref(["/redirect", "/login", "/401", "/404"]);
-const menuItems = ref<SearchItem[]>([]);
-const searchResults = ref<SearchItem[]>([]);
-const activeIndex = ref(-1);
+const permissionStore = usePermissionStore()
+const isModalVisible = ref(false)
+const searchKeyword = ref('')
+const searchInputRef = ref()
+const excludedRoutes = ref(['/redirect', '/login', '/401', '/404'])
+const menuItems = ref<SearchItem[]>([])
+const searchResults = ref<SearchItem[]>([])
+const activeIndex = ref(-1)
 
 interface SearchItem {
-  title: string;
-  path: string;
-  name?: string;
-  icon?: string;
-  redirect?: string;
+  title: string
+  path: string
+  name?: string
+  icon?: string
+  redirect?: string
 }
 
 // 打开搜索模态框
 function openSearchModal() {
-  searchKeyword.value = "";
-  activeIndex.value = -1;
-  isModalVisible.value = true;
+  searchKeyword.value = ''
+  activeIndex.value = -1
+  isModalVisible.value = true
   setTimeout(() => {
-    searchInputRef.value.focus();
-  }, 100);
+    searchInputRef.value.focus()
+  }, 100)
 }
 
 // 关闭搜索模态框
 function closeSearchModal() {
-  isModalVisible.value = false;
+  isModalVisible.value = false
 }
 
 // 更新搜索结果
 function updateSearchResults() {
-  activeIndex.value = -1;
+  activeIndex.value = -1
   if (searchKeyword.value) {
-    const keyword = searchKeyword.value.toLowerCase();
+    const keyword = searchKeyword.value.toLowerCase()
     searchResults.value = menuItems.value.filter((item) =>
-      item.title.toLowerCase().includes(keyword)
-    );
+      item.title.toLowerCase().includes(keyword),
+    )
   } else {
-    searchResults.value = [];
+    searchResults.value = []
   }
 }
 
 // 显示搜索结果
-const displayResults = computed(() => searchResults.value);
+const displayResults = computed(() => searchResults.value)
 
 // 执行搜索
 function selectActiveResult() {
   if (displayResults.value.length > 0 && activeIndex.value >= 0) {
-    navigateToRoute(displayResults.value[activeIndex.value]);
+    navigateToRoute(displayResults.value[activeIndex.value])
   }
 }
 
 // 导航搜索结果
 function navigateResults(direction: string) {
-  if (displayResults.value.length === 0) return;
+  if (displayResults.value.length === 0) return
 
-  if (direction === "up") {
+  if (direction === 'up') {
     activeIndex.value =
-      activeIndex.value <= 0 ? displayResults.value.length - 1 : activeIndex.value - 1;
-  } else if (direction === "down") {
+      activeIndex.value <= 0 ? displayResults.value.length - 1 : activeIndex.value - 1
+  } else if (direction === 'down') {
     activeIndex.value =
-      activeIndex.value >= displayResults.value.length - 1 ? 0 : activeIndex.value + 1;
+      activeIndex.value >= displayResults.value.length - 1 ? 0 : activeIndex.value + 1
   }
 }
 
 // 跳转到
 function navigateToRoute(item: SearchItem) {
-  closeSearchModal();
+  closeSearchModal()
   if (isExternal(item.path)) {
-    window.open(item.path, "_blank");
+    window.open(item.path, '_blank')
   } else {
-    router.push(item.path);
+    router.push(item.path)
   }
 }
 
-function loadRoutes(routes: RouteRecordRaw[], parentPath = "") {
+function loadRoutes(routes: RouteRecordRaw[], parentPath = '') {
   routes.forEach((route) => {
-    const path = route.path.startsWith("/") ? route.path : `${parentPath}/${route.path}`;
-    if (excludedRoutes.value.includes(route.path) || isExternal(route.path)) return;
+    const path = route.path.startsWith('/') ? route.path : `${parentPath}/${route.path}`
+    if (excludedRoutes.value.includes(route.path) || isExternal(route.path)) return
 
     if (route.children) {
-      loadRoutes(route.children, path);
+      loadRoutes(route.children, path)
     } else if (route.meta?.title) {
-      const title = route.meta.title === "dashboard" ? "首页" : route.meta.title;
+      const title = route.meta.title === 'dashboard' ? '首页' : route.meta.title
       menuItems.value.push({
         title,
         path,
-        name: typeof route.name === "string" ? route.name : undefined,
+        name: typeof route.name === 'string' ? route.name : undefined,
         icon: route.meta.icon,
-        redirect: typeof route.redirect === "string" ? route.redirect : undefined,
-      });
+        redirect: typeof route.redirect === 'string' ? route.redirect : undefined,
+      })
     }
-  });
+  })
 }
 
 // 初始化路由数据
 onMounted(() => {
-  loadRoutes(permissionStore.routes);
-});
+  loadRoutes(permissionStore.routes)
+})
 </script>
 
 <style scoped lang="scss">
@@ -239,7 +239,7 @@ onMounted(() => {
   }
 }
 
-.dialog-footer > [class^="i-svg:"] {
+.dialog-footer > [class^='i-svg:'] {
   display: inline-block;
   color: var(--el-text-color-secondary);
 }

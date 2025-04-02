@@ -1,41 +1,41 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-const CONFIG_BASE_URL = "/api/v1/config";
+const CONFIG_BASE_URL = '/api/v1/config'
 
 const ConfigAPI = {
   /** 系统配置分页 */
   getPage(queryParams?: ConfigPageQuery) {
     return request<any, PageResult<ConfigPageVO[]>>({
       url: `${CONFIG_BASE_URL}/page`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
 
   /** 系统配置表单数据 */
   getFormData(id: number) {
     return request<any, ConfigForm>({
       url: `${CONFIG_BASE_URL}/${id}/form`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /** 新增系统配置 */
   create(data: ConfigForm) {
     return request({
       url: `${CONFIG_BASE_URL}`,
-      method: "post",
+      method: 'post',
       data: data,
-    });
+    })
   },
 
   /** 更新系统配置 */
   update(id: number, data: ConfigForm) {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -46,50 +46,50 @@ const ConfigAPI = {
   deleteById(id: number) {
     return request({
       url: `${CONFIG_BASE_URL}/${id}`,
-      method: "delete",
-    });
+      method: 'delete',
+    })
   },
 
   refreshCache() {
     return request({
       url: `${CONFIG_BASE_URL}/refresh`,
-      method: "PUT",
-    });
+      method: 'PUT',
+    })
   },
-};
+}
 
-export default ConfigAPI;
+export default ConfigAPI
 
 /** $系统配置分页查询参数 */
 export interface ConfigPageQuery extends PageQuery {
   /** 搜索关键字 */
-  keywords?: string;
+  keywords?: string
 }
 
 /** 系统配置表单对象 */
 export interface ConfigForm {
   /** 主键 */
-  id?: number;
+  id?: number
   /** 配置名称 */
-  configName?: string;
+  configName?: string
   /** 配置键 */
-  configKey?: string;
+  configKey?: string
   /** 配置值 */
-  configValue?: string;
+  configValue?: string
   /** 描述、备注 */
-  remark?: string;
+  remark?: string
 }
 
 /** 系统配置分页对象 */
 export interface ConfigPageVO {
   /** 主键 */
-  id?: number;
+  id?: number
   /** 配置名称 */
-  configName?: string;
+  configName?: string
   /** 配置键 */
-  configKey?: string;
+  configKey?: string
   /** 配置值 */
-  configValue?: string;
+  configValue?: string
   /** 描述、备注 */
-  remark?: string;
+  remark?: string
 }

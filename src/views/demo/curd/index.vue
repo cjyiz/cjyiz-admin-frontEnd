@@ -35,7 +35,7 @@
       >
         <template #status="scope">
           <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-            {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+            {{ scope.row[scope.prop] == 1 ? '启用' : '禁用' }}
           </el-tag>
         </template>
         <template #gender="scope">
@@ -81,7 +81,7 @@
       >
         <template #status="scope">
           <el-tag :type="scope.row[scope.prop] == 1 ? 'success' : 'info'">
-            {{ scope.row[scope.prop] == 1 ? "启用" : "禁用" }}
+            {{ scope.row[scope.prop] == 1 ? '启用' : '禁用' }}
           </el-tag>
         </template>
       </page-content>
@@ -90,16 +90,16 @@
 </template>
 
 <script setup lang="ts">
-import UserAPI from "@/api/system/user.api";
-import DeptAPI from "@/api/system/dept.api";
-import RoleAPI from "@/api/system/role.api";
-import type { IObject, IOperatData } from "@/components/CURD/types";
-import usePage from "@/components/CURD/usePage";
-import addModalConfig from "./config/add";
-import contentConfig from "./config/content";
-import contentConfig2 from "./config/content2";
-import editModalConfig from "./config/edit";
-import searchConfig from "./config/search";
+import UserAPI from '@/api/system/user.api'
+import DeptAPI from '@/api/system/dept.api'
+import RoleAPI from '@/api/system/role.api'
+import type { IObject, IOperatData } from '@/components/CURD/types'
+import usePage from '@/components/CURD/usePage'
+import addModalConfig from './config/add'
+import contentConfig from './config/content'
+import contentConfig2 from './config/content2'
+import editModalConfig from './config/edit'
+import searchConfig from './config/search'
 
 const {
   searchRef,
@@ -114,70 +114,70 @@ const {
   handleExportClick,
   handleSearchClick,
   handleFilterChange,
-} = usePage();
+} = usePage()
 
 // 新增
 async function handleAddClick() {
-  addModalRef.value?.setModalVisible();
+  addModalRef.value?.setModalVisible()
   // 加载部门下拉数据源
-  addModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+  addModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions()
   // 加载角色下拉数据源
-  addModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
+  addModalConfig.formItems[4]!.options = await RoleAPI.getOptions()
 }
 // 编辑
 async function handleEditClick(row: IObject) {
-  editModalRef.value?.handleDisabled(false);
-  editModalRef.value?.setModalVisible();
+  editModalRef.value?.handleDisabled(false)
+  editModalRef.value?.setModalVisible()
   // 加载部门下拉数据源
-  editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+  editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions()
   // 加载角色下拉数据源
-  editModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
+  editModalConfig.formItems[4]!.options = await RoleAPI.getOptions()
   // 根据id获取数据进行填充
-  const data = await UserAPI.getFormData(row.id);
-  editModalRef.value?.setFormData(data);
+  const data = await UserAPI.getFormData(row.id)
+  editModalRef.value?.setFormData(data)
 }
 // 其他工具栏
 function handleToolbarClick(name: string) {
-  console.log(name);
-  if (name === "custom1") {
-    ElMessage.success("点击了自定义1按钮");
+  console.log(name)
+  if (name === 'custom1') {
+    ElMessage.success('点击了自定义1按钮')
   }
 }
 // 其他操作列
 async function handleOperatClick(data: IOperatData) {
-  console.log(data);
+  console.log(data)
   // 重置密码
-  if (data.name === "reset_pwd") {
-    ElMessageBox.prompt("请输入用户「" + data.row.username + "」的新密码", "重置密码", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
+  if (data.name === 'reset_pwd') {
+    ElMessageBox.prompt('请输入用户「' + data.row.username + '」的新密码', '重置密码', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
     }).then(({ value }) => {
       if (!value || value.length < 6) {
-        ElMessage.warning("密码至少需要6位字符，请重新输入");
-        return false;
+        ElMessage.warning('密码至少需要6位字符，请重新输入')
+        return false
       }
       UserAPI.resetPassword(data.row.id, value).then(() => {
-        ElMessage.success("密码重置成功，新密码是：" + value);
-      });
-    });
-  } else if (data.name === "detail") {
+        ElMessage.success('密码重置成功，新密码是：' + value)
+      })
+    })
+  } else if (data.name === 'detail') {
     // 禁用表单编辑
-    editModalRef.value?.handleDisabled(true);
+    editModalRef.value?.handleDisabled(true)
     // 打开抽屉
-    editModalRef.value?.setModalVisible();
+    editModalRef.value?.setModalVisible()
     // 修改抽屉标题
-    editModalConfig.drawer = { ...editModalConfig.drawer, title: "用户详情" };
+    editModalConfig.drawer = { ...editModalConfig.drawer, title: '用户详情' }
     // 加载部门下拉数据源
-    editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions();
+    editModalConfig.formItems[2]!.attrs!.data = await DeptAPI.getOptions()
     // 加载角色下拉数据源
-    editModalConfig.formItems[4]!.options = await RoleAPI.getOptions();
+    editModalConfig.formItems[4]!.options = await RoleAPI.getOptions()
     // 根据id获取数据进行填充
-    const formData = await UserAPI.getFormData(data.row.id);
+    const formData = await UserAPI.getFormData(data.row.id)
     // 设置表单数据
-    editModalRef.value?.setFormData(formData);
+    editModalRef.value?.setFormData(formData)
   }
 }
 
 // 切换示例
-const isA = ref(true);
+const isA = ref(true)
 </script>

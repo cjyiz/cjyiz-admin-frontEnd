@@ -7,21 +7,21 @@
   </template>
 </template>
 <script setup lang="ts">
-import { useDictStore } from "@/store";
+import { useDictStore } from '@/store'
 
 const props = defineProps({
   code: String, // 字典编码
   modelValue: [String, Number], // 字典项的值
   size: {
     type: String,
-    default: "default", // 标签大小
+    default: 'default', // 标签大小
   },
-});
-const label = ref("");
-const tagType = ref<"success" | "warning" | "info" | "primary" | "danger" | undefined>(); // 标签类型
-const tagSize = ref<"default" | "large" | "small">(props.size as "default" | "large" | "small"); // 标签大小
+})
+const label = ref('')
+const tagType = ref<'success' | 'warning' | 'info' | 'primary' | 'danger' | undefined>() // 标签类型
+const tagSize = ref<'default' | 'large' | 'small'>(props.size as 'default' | 'large' | 'small') // 标签大小
 
-const dictStore = useDictStore();
+const dictStore = useDictStore()
 /**
  * 根据字典项的值获取对应的 label 和 tagType
  * @param dictCode 字典编码
@@ -30,31 +30,31 @@ const dictStore = useDictStore();
  */
 const getLabelAndTagByValue = async (dictCode: string, value: any) => {
   // 按需加载字典数据
-  await dictStore.loadDictItems(dictCode);
+  await dictStore.loadDictItems(dictCode)
   // 从缓存中获取字典数据
-  const dictItems = dictStore.getDictItems(dictCode);
+  const dictItems = dictStore.getDictItems(dictCode)
   // 查找对应的字典项
-  const dictItem = dictItems.find((item) => item.value == value);
+  const dictItem = dictItems.find((item) => item.value == value)
   return {
-    label: dictItem?.label || "",
+    label: dictItem?.label || '',
     tagType: dictItem?.tagType,
-  };
-};
+  }
+}
 /**
  * 更新 label 和 tagType
  */
 const updateLabelAndTag = async () => {
-  console.log("updateLabelAndTag", props.code, props.modelValue);
-  if (!props.code || props.modelValue === undefined) return;
+  console.log('updateLabelAndTag', props.code, props.modelValue)
+  if (!props.code || props.modelValue === undefined) return
   const { label: newLabel, tagType: newTagType } = await getLabelAndTagByValue(
     props.code,
-    props.modelValue
-  );
-  label.value = newLabel;
-  tagType.value = newTagType as typeof tagType.value;
-};
+    props.modelValue,
+  )
+  label.value = newLabel
+  tagType.value = newTagType as typeof tagType.value
+}
 
-watch([() => props.code, () => props.modelValue], updateLabelAndTag);
+watch([() => props.code, () => props.modelValue], updateLabelAndTag)
 
-onMounted(updateLabelAndTag);
+onMounted(updateLabelAndTag)
 </script>

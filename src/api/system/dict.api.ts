@@ -1,6 +1,6 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-const DICT_BASE_URL = "/api/v1/dicts";
+const DICT_BASE_URL = '/api/v1/dicts'
 
 const DictAPI = {
   //---------------------------------------------------
@@ -16,9 +16,9 @@ const DictAPI = {
   getPage(queryParams: DictPageQuery) {
     return request<any, PageResult<DictPageVO[]>>({
       url: `${DICT_BASE_URL}/page`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
 
   /**
@@ -29,8 +29,8 @@ const DictAPI = {
   getList() {
     return request<any, OptionType[]>({
       url: `${DICT_BASE_URL}`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -42,8 +42,8 @@ const DictAPI = {
   getFormData(id: number) {
     return request<any, ResponseData<DictForm>>({
       url: `${DICT_BASE_URL}/${id}/form`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -54,9 +54,9 @@ const DictAPI = {
   create(data: DictForm) {
     return request({
       url: `${DICT_BASE_URL}`,
-      method: "post",
+      method: 'post',
       data: data,
-    });
+    })
   },
 
   /**
@@ -68,9 +68,9 @@ const DictAPI = {
   update(id: number, data: DictForm) {
     return request({
       url: `${DICT_BASE_URL}/${id}`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -81,8 +81,8 @@ const DictAPI = {
   deleteByIds(ids: string) {
     return request({
       url: `${DICT_BASE_URL}/${ids}`,
-      method: "delete",
-    });
+      method: 'delete',
+    })
   },
 
   //---------------------------------------------------
@@ -97,9 +97,9 @@ const DictAPI = {
   getDictItemPage(dictCode: string, queryParams: DictItemPageQuery) {
     return request<any, PageResult<DictItemPageVO[]>>({
       url: `${DICT_BASE_URL}/${dictCode}/items/page`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
 
   /**
@@ -108,8 +108,8 @@ const DictAPI = {
   getDictItems(dictCode: string) {
     return request<any, DictItemOption[]>({
       url: `${DICT_BASE_URL}/${dictCode}/items`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -118,9 +118,9 @@ const DictAPI = {
   createDictItem(dictCode: string, data: DictItemForm) {
     return request({
       url: `${DICT_BASE_URL}/${dictCode}/items`,
-      method: "post",
+      method: 'post',
       data: data,
-    });
+    })
   },
 
   /**
@@ -132,8 +132,8 @@ const DictAPI = {
   getDictItemFormData(dictCode: string, id: number) {
     return request<any, ResponseData<DictItemForm>>({
       url: `${DICT_BASE_URL}/${dictCode}/items/${id}/form`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -142,9 +142,9 @@ const DictAPI = {
   updateDictItem(dictCode: string, id: number, data: DictItemForm) {
     return request({
       url: `${DICT_BASE_URL}/${dictCode}/items/${id}`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -153,12 +153,12 @@ const DictAPI = {
   deleteDictItems(dictCode: string, ids: string) {
     return request({
       url: `${DICT_BASE_URL}/${dictCode}/items/${ids}`,
-      method: "delete",
-    });
+      method: 'delete',
+    })
   },
-};
+}
 
-export default DictAPI;
+export default DictAPI
 
 /**
  * 字典查询参数
@@ -167,12 +167,12 @@ export interface DictPageQuery extends PageQuery {
   /**
    * 关键字(字典名称/编码)
    */
-  keywords?: string;
+  keywords?: string
 
   /**
    * 字典状态（1:启用，0:禁用）
    */
-  status?: number;
+  status?: number
 }
 
 /**
@@ -182,19 +182,19 @@ export interface DictPageVO {
   /**
    * 字典ID
    */
-  id: number;
+  id: number
   /**
    * 字典名称
    */
-  name: string;
+  name: string
   /**
    * 字典编码
    */
-  dictCode: string;
+  dictCode: string
   /**
    * 字典状态（1:启用，0:禁用）
    */
-  status: number;
+  status: number
 }
 
 /**
@@ -204,23 +204,23 @@ export interface DictForm {
   /**
    * 字典ID
    */
-  id?: number;
+  id?: number
   /**
    * 字典名称
    */
-  name?: string;
+  name?: string
   /**
    * 字典编码
    */
-  dictCode?: string;
+  dictCode?: string
   /**
    * 字典状态（1-启用，0-禁用）
    */
-  status?: number;
+  status?: number
   /**
    * 备注
    */
-  remark?: string;
+  remark?: string
 }
 
 /**
@@ -228,10 +228,10 @@ export interface DictForm {
  */
 export interface DictItemPageQuery extends PageQuery {
   /** 关键字(字典数据值/标签) */
-  keywords?: string;
+  keywords?: string
 
   /** 字典编码 */
-  dictCode?: string;
+  dictCode?: string
 }
 
 /**
@@ -241,27 +241,27 @@ export interface DictItemPageVO {
   /**
    * 字典ID
    */
-  id: number;
+  id: number
   /**
    * 字典编码
    */
-  dictCode: string;
+  dictCode: string
   /**
    * 字典数据值
    */
-  value: string;
+  value: string
   /**
    * 字典数据标签
    */
-  label: string;
+  label: string
   /**
    * 状态（1:启用，0:禁用)
    */
-  status: number;
+  status: number
   /**
    * 字典排序
    */
-  sort?: number;
+  sort?: number
 }
 
 /**
@@ -271,32 +271,32 @@ export interface DictItemForm {
   /**
    * 字典ID
    */
-  id?: number;
+  id?: number
   /**
    * 字典编码
    */
-  dictCode?: string;
+  dictCode?: string
   /**
    * 字典数据值
    */
-  value?: string;
+  value?: string
   /**
    * 字典数据标签
    */
-  label?: string;
+  label?: string
   /**
    * 状态（1:启用，0:禁用)
    */
-  status?: number;
+  status?: number
   /**
    * 字典排序
    */
-  sort?: number;
+  sort?: number
 
   /**
    * 标签类型
    */
-  tagType?: "success" | "warning" | "info" | "primary" | "danger" | undefined;
+  tagType?: 'success' | 'warning' | 'info' | 'primary' | 'danger' | undefined
 }
 
 /**
@@ -304,11 +304,11 @@ export interface DictItemForm {
  */
 export interface DictItemOption {
   /** 字典数据值 */
-  value: string;
+  value: string
 
   /** 字典数据标签 */
-  label: string;
+  label: string
 
   /** 标签类型 */
-  tagType: string;
+  tagType: string
 }

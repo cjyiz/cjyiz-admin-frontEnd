@@ -280,76 +280,76 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Dashboard",
+  name: 'Dashboard',
   inheritAttrs: false,
-});
+})
 
-import { dayjs } from "element-plus";
-import LogAPI, { VisitStatsVO, VisitTrendVO } from "@/api/system/log.api";
-import { useUserStore } from "@/store/modules/user.store";
-import { formatGrowthRate } from "@/utils";
+import { dayjs } from 'element-plus'
+import LogAPI, { VisitStatsVO, VisitTrendVO } from '@/api/system/log.api'
+import { useUserStore } from '@/store/modules/user.store'
+import { formatGrowthRate } from '@/utils'
 
 interface VersionItem {
-  id: string;
-  title: string; // 版本标题（如：v2.4.0）
-  date: string; // 发布时间
-  content: string; // 版本描述
-  link: string; // 详情链接
-  tag?: string; // 版本标签（可选）
+  id: string
+  title: string // 版本标题（如：v2.4.0）
+  date: string // 发布时间
+  content: string // 版本描述
+  link: string // 详情链接
+  tag?: string // 版本标签（可选）
 }
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 // 当前通知公告列表
 const vesionList = ref<VersionItem[]>([
   {
-    id: "1",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
+    id: '1',
+    title: 'v2.4.0',
+    date: '2021-09-01 00:00:00',
+    content: '实现基础框架搭建，包含权限管理、路由系统等核心功能。',
+    link: 'https://gitee.com/youlaiorg/vue3-element-admin/releases',
+    tag: '里程碑',
   },
   {
-    id: "1",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
+    id: '1',
+    title: 'v2.4.0',
+    date: '2021-09-01 00:00:00',
+    content: '实现基础框架搭建，包含权限管理、路由系统等核心功能。',
+    link: 'https://gitee.com/youlaiorg/vue3-element-admin/releases',
+    tag: '里程碑',
   },
   {
-    id: "1",
-    title: "v2.4.0",
-    date: "2021-09-01 00:00:00",
-    content: "实现基础框架搭建，包含权限管理、路由系统等核心功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
-    tag: "里程碑",
+    id: '1',
+    title: 'v2.4.0',
+    date: '2021-09-01 00:00:00',
+    content: '实现基础框架搭建，包含权限管理、路由系统等核心功能。',
+    link: 'https://gitee.com/youlaiorg/vue3-element-admin/releases',
+    tag: '里程碑',
   },
-]);
+])
 
 // 当前时间（用于计算问候语）
-const currentDate = new Date();
+const currentDate = new Date()
 
 // 问候语：根据当前小时返回不同问候语
 const greetings = computed(() => {
-  const hours = currentDate.getHours();
-  const nickname = userStore.userInfo.nickname;
+  const hours = currentDate.getHours()
+  const nickname = userStore.userInfo.nickname
   if (hours >= 6 && hours < 8) {
-    return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
+    return '晨起披衣出草堂，轩窗已自喜微凉🌅！'
   } else if (hours >= 8 && hours < 12) {
-    return `上午好，${nickname}！`;
+    return `上午好，${nickname}！`
   } else if (hours >= 12 && hours < 18) {
-    return `下午好，${nickname}！`;
+    return `下午好，${nickname}！`
   } else if (hours >= 18 && hours < 24) {
-    return `晚上好，${nickname}！`;
+    return `晚上好，${nickname}！`
   } else {
-    return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
+    return '偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！'
   }
-});
+})
 
 // 访客统计数据加载状态
-const visitStatsLoading = ref(true);
+const visitStatsLoading = ref(true)
 // 访客统计数据
 const visitStatsData = ref<VisitStatsVO>({
   todayUvCount: 0,
@@ -358,12 +358,12 @@ const visitStatsData = ref<VisitStatsVO>({
   todayPvCount: 0,
   pvGrowthRate: 0,
   totalPvCount: 0,
-});
+})
 
 // 访问趋势日期范围（单位：天）
-const visitTrendDateRange = ref(7);
+const visitTrendDateRange = ref(7)
 // 访问趋势图表配置
-const visitTrendChartOptions = ref();
+const visitTrendChartOptions = ref()
 
 /**
  * 获取访客统计数据
@@ -371,29 +371,29 @@ const visitTrendChartOptions = ref();
 const fetchVisitStatsData = () => {
   LogAPI.getVisitStats()
     .then((data) => {
-      visitStatsData.value = data;
+      visitStatsData.value = data
     })
     .finally(() => {
-      visitStatsLoading.value = false;
-    });
-};
+      visitStatsLoading.value = false
+    })
+}
 
 /**
  * 获取访问趋势数据，并更新图表配置
  */
 const fetchVisitTrendData = () => {
   const startDate = dayjs()
-    .subtract(visitTrendDateRange.value - 1, "day")
-    .toDate();
-  const endDate = new Date();
+    .subtract(visitTrendDateRange.value - 1, 'day')
+    .toDate()
+  const endDate = new Date()
 
   LogAPI.getVisitTrend({
-    startDate: dayjs(startDate).format("YYYY-MM-DD"),
-    endDate: dayjs(endDate).format("YYYY-MM-DD"),
+    startDate: dayjs(startDate).format('YYYY-MM-DD'),
+    endDate: dayjs(endDate).format('YYYY-MM-DD'),
   }).then((data) => {
-    updateVisitTrendChartOptions(data);
-  });
-};
+    updateVisitTrendChartOptions(data)
+  })
+}
 
 /**
  * 更新访问趋势图表的配置项
@@ -401,69 +401,69 @@ const fetchVisitTrendData = () => {
  * @param data - 访问趋势数据
  */
 const updateVisitTrendChartOptions = (data: VisitTrendVO) => {
-  console.log("Updating visit trend chart options");
+  console.log('Updating visit trend chart options')
 
   visitTrendChartOptions.value = {
     tooltip: {
-      trigger: "axis",
+      trigger: 'axis',
     },
     legend: {
-      data: ["浏览量(PV)", "访客数(UV)"],
+      data: ['浏览量(PV)', '访客数(UV)'],
       bottom: 0,
     },
     grid: {
-      left: "1%",
-      right: "5%",
-      bottom: "10%",
+      left: '1%',
+      right: '5%',
+      bottom: '10%',
       containLabel: true,
     },
     xAxis: {
-      type: "category",
+      type: 'category',
       data: data.dates,
     },
     yAxis: {
-      type: "value",
+      type: 'value',
       splitLine: {
         show: true,
         lineStyle: {
-          type: "dashed",
+          type: 'dashed',
         },
       },
     },
     series: [
       {
-        name: "浏览量(PV)",
-        type: "line",
+        name: '浏览量(PV)',
+        type: 'line',
         data: data.pvList,
         areaStyle: {
-          color: "rgba(64, 158, 255, 0.1)",
+          color: 'rgba(64, 158, 255, 0.1)',
         },
         smooth: true,
         itemStyle: {
-          color: "#4080FF",
+          color: '#4080FF',
         },
         lineStyle: {
-          color: "#4080FF",
+          color: '#4080FF',
         },
       },
       {
-        name: "访客数(UV)",
-        type: "line",
+        name: '访客数(UV)',
+        type: 'line',
         data: data.ipList,
         areaStyle: {
-          color: "rgba(103, 194, 58, 0.1)",
+          color: 'rgba(103, 194, 58, 0.1)',
         },
         smooth: true,
         itemStyle: {
-          color: "#67C23A",
+          color: '#67C23A',
         },
         lineStyle: {
-          color: "#67C23A",
+          color: '#67C23A',
         },
       },
     ],
-  };
-};
+  }
+}
 
 /**
  * 根据增长率计算对应的 CSS 类名
@@ -472,31 +472,31 @@ const updateVisitTrendChartOptions = (data: VisitTrendVO) => {
  */
 const computeGrowthRateClass = (growthRate?: number): string => {
   if (!growthRate) {
-    return "color-[--el-color-info]";
+    return 'color-[--el-color-info]'
   }
   if (growthRate > 0) {
-    return "color-[--el-color-danger]";
+    return 'color-[--el-color-danger]'
   } else if (growthRate < 0) {
-    return "color-[--el-color-success]";
+    return 'color-[--el-color-success]'
   } else {
-    return "color-[--el-color-info]";
+    return 'color-[--el-color-info]'
   }
-};
+}
 
 // 监听访问趋势日期范围的变化，重新获取趋势数据
 watch(
   () => visitTrendDateRange.value,
   (newVal) => {
-    console.log("Visit trend date range changed:", newVal);
-    fetchVisitTrendData();
+    console.log('Visit trend date range changed:', newVal)
+    fetchVisitTrendData()
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 
 // 组件挂载后加载访客统计数据和通知公告数据
 onMounted(() => {
-  fetchVisitStatsData();
-});
+  fetchVisitStatsData()
+})
 </script>
 
 <style lang="scss" scoped>

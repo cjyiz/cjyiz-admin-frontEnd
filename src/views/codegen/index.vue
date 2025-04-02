@@ -408,105 +408,105 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Codegen",
-});
+  name: 'Codegen',
+})
 
-import Sortable from "sortablejs";
-import "codemirror/mode/javascript/javascript.js";
-import Codemirror from "codemirror-editor-vue3";
-import type { CmComponentRef } from "codemirror-editor-vue3";
-import type { EditorConfiguration } from "codemirror";
+import Sortable from 'sortablejs'
+import 'codemirror/mode/javascript/javascript.js'
+import Codemirror from 'codemirror-editor-vue3'
+import type { CmComponentRef } from 'codemirror-editor-vue3'
+import type { EditorConfiguration } from 'codemirror'
 
-import { FormTypeEnum } from "@/enums/codegen/form.enum";
-import { QueryTypeEnum } from "@/enums/codegen/query.enum";
+import { FormTypeEnum } from '@/enums/codegen/form.enum'
+import { QueryTypeEnum } from '@/enums/codegen/query.enum'
 
 import GeneratorAPI, {
   TablePageVO,
   GenConfigForm,
   TablePageQuery,
   FieldConfig,
-} from "@/api/codegen.api";
+} from '@/api/codegen.api'
 
-import DictAPI from "@/api/system/dict.api";
-import MenuAPI from "@/api/system/menu.api";
+import DictAPI from '@/api/system/dict.api'
+import MenuAPI from '@/api/system/menu.api'
 
 interface TreeNode {
-  label: string;
-  content?: string;
-  children?: TreeNode[];
+  label: string
+  content?: string
+  children?: TreeNode[]
 }
-const treeData = ref<TreeNode[]>([]);
+const treeData = ref<TreeNode[]>([])
 
-const queryFormRef = ref();
+const queryFormRef = ref()
 const queryParams = reactive<TablePageQuery>({
   pageNum: 1,
   pageSize: 10,
-});
+})
 
-const loading = ref(false);
-const loadingText = ref("loading...");
+const loading = ref(false)
+const loadingText = ref('loading...')
 
-const pageData = ref<TablePageVO[]>([]);
-const total = ref(0);
+const pageData = ref<TablePageVO[]>([])
+const total = ref(0)
 
-const formTypeOptions: Record<string, OptionType> = FormTypeEnum;
-const queryTypeOptions: Record<string, OptionType> = QueryTypeEnum;
-const dictOptions = ref<OptionType[]>();
-const menuOptions = ref<OptionType[]>([]);
+const formTypeOptions: Record<string, OptionType> = FormTypeEnum
+const queryTypeOptions: Record<string, OptionType> = QueryTypeEnum
+const dictOptions = ref<OptionType[]>()
+const menuOptions = ref<OptionType[]>([])
 const genConfigFormData = ref<GenConfigForm>({
   fieldConfigs: [],
-});
+})
 
 const genConfigFormRules = {
-  tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
-  businessName: [{ required: true, message: "请输入业务名", trigger: "blur" }],
-  packageName: [{ required: true, message: "请输入主包名", trigger: "blur" }],
-  moduleName: [{ required: true, message: "请输入模块名", trigger: "blur" }],
-  entityName: [{ required: true, message: "请输入实体名", trigger: "blur" }],
-};
+  tableName: [{ required: true, message: '请输入表名', trigger: 'blur' }],
+  businessName: [{ required: true, message: '请输入业务名', trigger: 'blur' }],
+  packageName: [{ required: true, message: '请输入主包名', trigger: 'blur' }],
+  moduleName: [{ required: true, message: '请输入模块名', trigger: 'blur' }],
+  entityName: [{ required: true, message: '请输入实体名', trigger: 'blur' }],
+}
 
 const dialog = reactive({
   visible: false,
-  title: "",
-});
+  title: '',
+})
 
-const { copy, copied } = useClipboard();
-const code = ref();
-const cmRef = ref<CmComponentRef>();
+const { copy, copied } = useClipboard()
+const code = ref()
+const cmRef = ref<CmComponentRef>()
 const cmOptions: EditorConfiguration = {
-  mode: "text/javascript",
-};
+  mode: 'text/javascript',
+}
 
-const prevBtnText = ref("");
-const nextBtnText = ref("下一步，字段配置");
-const active = ref(0);
-const currentTableName = ref("");
-const sortFlag = ref<object>();
+const prevBtnText = ref('')
+const nextBtnText = ref('下一步，字段配置')
+const active = ref(0)
+const currentTableName = ref('')
+const sortFlag = ref<object>()
 
 // 查询是否全选
-const isCheckAllQuery = ref(false);
+const isCheckAllQuery = ref(false)
 // 列表是否全选
-const isCheckAllList = ref(false);
+const isCheckAllList = ref(false)
 // 表单是否全选
-const isCheckAllForm = ref(false);
+const isCheckAllForm = ref(false)
 
 watch(active, (val) => {
   if (val === 0) {
-    nextBtnText.value = "下一步，字段配置";
+    nextBtnText.value = '下一步，字段配置'
   } else if (val === 1) {
-    prevBtnText.value = "上一步，基础配置";
-    nextBtnText.value = "下一步，确认生成";
+    prevBtnText.value = '上一步，基础配置'
+    nextBtnText.value = '下一步，确认生成'
   } else if (val === 2) {
-    prevBtnText.value = "上一步，字段配置";
-    nextBtnText.value = "下载代码";
+    prevBtnText.value = '上一步，字段配置'
+    nextBtnText.value = '下载代码'
   }
-});
+})
 
 watch(copied, () => {
   if (copied.value) {
-    ElMessage.success("复制成功");
+    ElMessage.success('复制成功')
   }
-});
+})
 
 watch(
   () => genConfigFormData.value.fieldConfigs as FieldConfig[],
@@ -514,48 +514,48 @@ watch(
     newVal.forEach((fieldConfig) => {
       if (
         fieldConfig.fieldType &&
-        fieldConfig.fieldType.includes("Date") &&
+        fieldConfig.fieldType.includes('Date') &&
         fieldConfig.isShowInQuery === 1
       ) {
-        fieldConfig.queryType = QueryTypeEnum.BETWEEN.value as number;
+        fieldConfig.queryType = QueryTypeEnum.BETWEEN.value as number
       }
-    });
+    })
   },
-  { deep: true, immediate: true }
-);
+  { deep: true, immediate: true },
+)
 
 const initSort = () => {
   if (sortFlag.value) {
-    return;
+    return
   }
-  const table = document.querySelector(".elTableCustom .el-table__body-wrapper tbody");
+  const table = document.querySelector('.elTableCustom .el-table__body-wrapper tbody')
   sortFlag.value = Sortable.create(<HTMLElement>table, {
-    group: "shared",
+    group: 'shared',
     animation: 150,
-    ghostClass: "sortable-ghost", //拖拽样式
-    handle: ".sortable-handle", //拖拽区域
-    easing: "cubic-bezier(1, 0, 0, 1)",
+    ghostClass: 'sortable-ghost', //拖拽样式
+    handle: '.sortable-handle', //拖拽区域
+    easing: 'cubic-bezier(1, 0, 0, 1)',
 
     // 结束拖动事件
     onEnd: (item: any) => {
-      setNodeSort(item.oldIndex, item.newIndex);
+      setNodeSort(item.oldIndex, item.newIndex)
     },
-  });
-};
+  })
+}
 
 const setNodeSort = (oldIndex: number, newIndex: number) => {
   // 使用arr复制一份表格数组数据
-  let arr = Object.assign([], genConfigFormData.value.fieldConfigs);
-  const currentRow = arr.splice(oldIndex, 1)[0];
-  arr.splice(newIndex, 0, currentRow);
+  let arr = Object.assign([], genConfigFormData.value.fieldConfigs)
+  const currentRow = arr.splice(oldIndex, 1)[0]
+  arr.splice(newIndex, 0, currentRow)
   arr.forEach((item: FieldConfig, index) => {
-    item.fieldSort = index + 1;
-  });
-  genConfigFormData.value.fieldConfigs = [];
+    item.fieldSort = index + 1
+  })
+  genConfigFormData.value.fieldConfigs = []
   nextTick(async () => {
-    genConfigFormData.value.fieldConfigs = arr;
-  });
-};
+    genConfigFormData.value.fieldConfigs = arr
+  })
+}
 
 /** 上一步 */
 function handlePrevClick() {
@@ -563,174 +563,173 @@ function handlePrevClick() {
     //这里需要重新获取一次数据，如果第一次生成代码后，再次点击上一步，数据不重新获取，再次点击下一步，会再次插入数据，导致索引重复报错
     genConfigFormData.value = {
       fieldConfigs: [],
-    };
+    }
     nextTick(() => {
-      loading.value = true;
+      loading.value = true
       GeneratorAPI.getGenConfig(currentTableName.value)
         .then((data) => {
-          genConfigFormData.value = data;
+          genConfigFormData.value = data
         })
         .finally(() => {
-          loading.value = false;
-        });
-    });
-    initSort();
+          loading.value = false
+        })
+    })
+    initSort()
   }
-  if (active.value-- <= 0) active.value = 0;
+  if (active.value-- <= 0) active.value = 0
 }
 
 /** 下一步 */
 function handleNextClick() {
   if (active.value === 0) {
     //这里需要校验基础配置
-    const { tableName, packageName, businessName, moduleName, entityName } =
-      genConfigFormData.value;
+    const { tableName, packageName, businessName, moduleName, entityName } = genConfigFormData.value
     if (!tableName || !packageName || !businessName || !moduleName || !entityName) {
-      ElMessage.error("表名、业务名、包名、模块名、实体名不能为空");
-      return;
+      ElMessage.error('表名、业务名、包名、模块名、实体名不能为空')
+      return
     }
-    initSort();
+    initSort()
   }
   if (active.value === 1) {
     // 保存生成配置
-    const tableName = genConfigFormData.value.tableName;
+    const tableName = genConfigFormData.value.tableName
     if (!tableName) {
-      ElMessage.error("表名不能为空");
-      return;
+      ElMessage.error('表名不能为空')
+      return
     }
-    loading.value = true;
-    loadingText.value = "代码生成中，请稍后...";
+    loading.value = true
+    loadingText.value = '代码生成中，请稍后...'
     GeneratorAPI.saveGenConfig(tableName, genConfigFormData.value)
       .then(() => {
-        handlePreview(tableName);
+        handlePreview(tableName)
       })
       .then(() => {
-        if (active.value++ >= 2) active.value = 2;
+        if (active.value++ >= 2) active.value = 2
       })
       .finally(() => {
-        loading.value = false;
-        loadingText.value = "loading...";
-      });
+        loading.value = false
+        loadingText.value = 'loading...'
+      })
   } else {
     if (active.value++ >= 2) {
-      active.value = 2;
+      active.value = 2
     }
     if (active.value === 2) {
-      const tableName = genConfigFormData.value.tableName;
+      const tableName = genConfigFormData.value.tableName
       if (!tableName) {
-        ElMessage.error("表名不能为空");
-        return;
+        ElMessage.error('表名不能为空')
+        return
       }
-      GeneratorAPI.download(tableName);
+      GeneratorAPI.download(tableName)
     }
   }
 }
 
 /** 查询 */
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   GeneratorAPI.getTablePage(queryParams)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+      pageData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 /** 重置查询 */
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  handleQuery();
+  queryFormRef.value.resetFields()
+  queryParams.pageNum = 1
+  handleQuery()
 }
 
 /** 打开弹窗 */
 async function handleOpenDialog(tableName: string) {
-  dialog.visible = true;
-  active.value = 0;
+  dialog.visible = true
+  active.value = 0
 
-  menuOptions.value = await MenuAPI.getOptions(true);
+  menuOptions.value = await MenuAPI.getOptions(true)
 
-  currentTableName.value = tableName;
+  currentTableName.value = tableName
   // 获取字典数据
   DictAPI.getList().then((data) => {
-    dictOptions.value = data;
-    loading.value = true;
+    dictOptions.value = data
+    loading.value = true
     GeneratorAPI.getGenConfig(tableName)
       .then((data) => {
-        dialog.title = `${tableName} 代码生成`;
-        genConfigFormData.value = data;
+        dialog.title = `${tableName} 代码生成`
+        genConfigFormData.value = data
 
-        checkAllSelected("isShowInQuery", isCheckAllQuery);
-        checkAllSelected("isShowInList", isCheckAllList);
-        checkAllSelected("isShowInForm", isCheckAllForm);
+        checkAllSelected('isShowInQuery', isCheckAllQuery)
+        checkAllSelected('isShowInList', isCheckAllList)
+        checkAllSelected('isShowInForm', isCheckAllForm)
 
         // 如果已经配置过，直接跳转到预览页面
         if (genConfigFormData.value.id) {
-          active.value = 2;
-          handlePreview(tableName);
+          active.value = 2
+          handlePreview(tableName)
         } else {
           // 如果没有配置过，跳转到基础配置页面
-          active.value = 0;
+          active.value = 0
         }
       })
       .finally(() => {
-        loading.value = false;
-      });
-  });
+        loading.value = false
+      })
+  })
 }
 
 /** 重置配置 */
 function handleResetConfig(tableName: string) {
-  ElMessageBox.confirm("确定要重置配置吗？", "提示", {
-    type: "warning",
+  ElMessageBox.confirm('确定要重置配置吗？', '提示', {
+    type: 'warning',
   }).then(() => {
     GeneratorAPI.resetGenConfig(tableName).then(() => {
-      ElMessage.success("重置成功");
-      handleQuery();
-    });
-  });
+      ElMessage.success('重置成功')
+      handleQuery()
+    })
+  })
 }
 
-type FieldConfigKey = "isShowInQuery" | "isShowInList" | "isShowInForm";
+type FieldConfigKey = 'isShowInQuery' | 'isShowInList' | 'isShowInForm'
 
 /** 全选 */
 const toggleCheckAll = (key: FieldConfigKey, value: boolean) => {
-  const fieldConfigs = genConfigFormData.value?.fieldConfigs;
+  const fieldConfigs = genConfigFormData.value?.fieldConfigs
 
   if (fieldConfigs) {
     fieldConfigs.forEach((row: FieldConfig) => {
-      row[key] = value ? 1 : 0;
-    });
+      row[key] = value ? 1 : 0
+    })
   }
-};
+}
 
 const checkAllSelected = (key: keyof FieldConfig, isCheckAllRef: any) => {
-  const fieldConfigs = genConfigFormData.value?.fieldConfigs || [];
-  isCheckAllRef.value = fieldConfigs.every((row: FieldConfig) => row[key] === 1);
-};
+  const fieldConfigs = genConfigFormData.value?.fieldConfigs || []
+  isCheckAllRef.value = fieldConfigs.every((row: FieldConfig) => row[key] === 1)
+}
 
 /** 获取生成预览 */
 function handlePreview(tableName: string) {
-  treeData.value = [];
+  treeData.value = []
   GeneratorAPI.getPreviewData(tableName)
     .then((data) => {
-      dialog.title = `代码生成 ${tableName}`;
+      dialog.title = `代码生成 ${tableName}`
       // 组装树形结构完善代码
-      const tree = buildTree(data);
-      treeData.value = [tree];
+      const tree = buildTree(data)
+      treeData.value = [tree]
 
       // 默认选中第一个叶子节点并设置 code 值
-      const firstLeafNode = findFirstLeafNode(tree);
+      const firstLeafNode = findFirstLeafNode(tree)
       if (firstLeafNode) {
-        code.value = firstLeafNode.content || "";
+        code.value = firstLeafNode.content || ''
       }
     })
     .catch(() => {
-      active.value = 0;
-    });
+      active.value = 0
+    })
 }
 
 /**
@@ -741,67 +740,67 @@ function handlePreview(tableName: string) {
  */
 function buildTree(data: { path: string; fileName: string; content: string }[]): TreeNode {
   // 动态获取根节点
-  const root: TreeNode = { label: "前后端代码", children: [] };
+  const root: TreeNode = { label: '前后端代码', children: [] }
 
   data.forEach((item) => {
     // 将路径分成数组
-    const separator = item.path.includes("/") ? "/" : "\\";
-    const parts = item.path.split(separator);
+    const separator = item.path.includes('/') ? '/' : '\\'
+    const parts = item.path.split(separator)
 
     // 定义特殊路径
     const specialPaths = [
-      "src" + separator + "main",
-      "java",
+      'src' + separator + 'main',
+      'java',
       genConfigFormData.value.backendAppName,
       genConfigFormData.value.frontendAppName,
-      (genConfigFormData.value.packageName + "." + genConfigFormData.value.moduleName).replace(
+      (genConfigFormData.value.packageName + '.' + genConfigFormData.value.moduleName).replace(
         /\./g,
-        separator
+        separator,
       ),
-    ];
+    ]
 
     // 检查路径中的特殊部分并合并它们
-    const mergedParts: string[] = [];
-    let buffer: string[] = [];
+    const mergedParts: string[] = []
+    let buffer: string[] = []
 
     parts.forEach((part) => {
-      buffer.push(part);
-      const currentPath = buffer.join(separator);
+      buffer.push(part)
+      const currentPath = buffer.join(separator)
       if (specialPaths.includes(currentPath)) {
-        mergedParts.push(currentPath);
-        buffer = [];
+        mergedParts.push(currentPath)
+        buffer = []
       }
-    });
+    })
 
     // 将 mergedParts 路径中的分隔符\替换为/
     mergedParts.forEach((part, index) => {
-      mergedParts[index] = part.replace(/\\/g, "/");
-    });
+      mergedParts[index] = part.replace(/\\/g, '/')
+    })
 
     if (buffer.length > 0) {
-      mergedParts.push(...buffer);
+      mergedParts.push(...buffer)
     }
 
-    let currentNode = root;
+    let currentNode = root
 
     mergedParts.forEach((part) => {
       // 查找或创建当前部分的子节点
-      let node = currentNode.children?.find((child) => child.label === part);
+      let node = currentNode.children?.find((child) => child.label === part)
       if (!node) {
-        node = { label: part, children: [] };
-        currentNode.children?.push(node);
+        node = { label: part, children: [] }
+        currentNode.children?.push(node)
       }
-      currentNode = node;
-    });
+      currentNode = node
+    })
 
     // 添加文件节点
     currentNode.children?.push({
       label: item.fileName,
       content: item?.content,
-    });
-  });
+    })
+  })
 
-  return root;
+  return root
 }
 
 /**
@@ -811,54 +810,54 @@ function buildTree(data: { path: string; fileName: string; content: string }[]):
  */
 function findFirstLeafNode(node: TreeNode): TreeNode | null {
   if (!node.children || node.children.length === 0) {
-    return node;
+    return node
   }
   for (const child of node.children) {
-    const leafNode = findFirstLeafNode(child);
+    const leafNode = findFirstLeafNode(child)
     if (leafNode) {
-      return leafNode;
+      return leafNode
     }
   }
-  return null;
+  return null
 }
 
 /** 文件树节点 Click */
 function handleFileTreeNodeClick(data: TreeNode) {
   if (!data.children || data.children.length === 0) {
-    code.value = data.content || "";
+    code.value = data.content || ''
   }
 }
 
 /** 获取文件树节点图标 */
 function getFileTreeNodeIcon(label: string) {
-  if (label.endsWith(".java")) {
-    return "java";
+  if (label.endsWith('.java')) {
+    return 'java'
   }
-  if (label.endsWith(".html")) {
-    return "html";
+  if (label.endsWith('.html')) {
+    return 'html'
   }
-  if (label.endsWith(".vue")) {
-    return "vue";
+  if (label.endsWith('.vue')) {
+    return 'vue'
   }
-  if (label.endsWith(".ts")) {
-    return "typescript";
+  if (label.endsWith('.ts')) {
+    return 'typescript'
   }
-  if (label.endsWith(".xml")) {
-    return "xml";
+  if (label.endsWith('.xml')) {
+    return 'xml'
   }
-  return "file";
+  return 'file'
 }
 
 /** 一键复制 */
 const handleCopyCode = () => {
   if (code.value) {
-    copy(code.value);
+    copy(code.value)
   }
-};
+}
 
 /** 组件挂载后执行 */
 onMounted(() => {
-  handleQuery();
-  cmRef.value?.destroy();
-});
+  handleQuery()
+  cmRef.value?.destroy()
+})
 </script>

@@ -27,14 +27,14 @@
 </template>
 
 <script setup lang="ts">
-import MultiImageUpload from "@/components/Upload/MultiImageUpload.vue";
+import MultiImageUpload from '@/components/Upload/MultiImageUpload.vue'
 
 // 单图
-const picUrl = ref("https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg");
-const picUrls = ref(["https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg"]);
+const picUrl = ref('https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg')
+const picUrls = ref(['https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg'])
 
 const fileUrls = ref([
-  { name: "照片1.jpg", url: "https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg" },
-  { name: "照片2.jpg", url: "https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg" },
-]);
+  { name: '照片1.jpg', url: 'https://s2.loli.net/2023/05/24/yNsxFC8rLHMZQcK.jpg' },
+  { name: '照片2.jpg', url: 'https://s2.loli.net/2023/05/24/RuHFMwW4rG5lIqs.jpg' },
+])
 </script>

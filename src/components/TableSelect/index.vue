@@ -142,198 +142,198 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from "vue";
-import { useResizeObserver } from "@vueuse/core";
-import type { FormInstance, PopoverProps, TableInstance } from "element-plus";
+import { ref, reactive, computed } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
+import type { FormInstance, PopoverProps, TableInstance } from 'element-plus'
 
 // 对象类型
-export type IObject = Record<string, any>;
+export type IObject = Record<string, any>
 // 定义接收的属性
 export interface ISelectConfig<T = any> {
   // 宽度
-  width?: string;
+  width?: string
   // 占位符
-  placeholder?: string;
+  placeholder?: string
   // popover组件属性
-  popover?: Partial<Omit<PopoverProps, "visible" | "v-model:visible">>;
+  popover?: Partial<Omit<PopoverProps, 'visible' | 'v-model:visible'>>
   // 列表的网络请求函数(需返回promise)
-  indexAction: (_queryParams: T) => Promise<any>;
+  indexAction: (_queryParams: T) => Promise<any>
   // 主键名(跨页选择必填,默认为id)
-  pk?: string;
+  pk?: string
   // 多选
-  multiple?: boolean;
+  multiple?: boolean
   // 表单项
   formItems: Array<{
     // 组件类型(如input,select等)
-    type?: "input" | "select" | "tree-select" | "date-picker";
+    type?: 'input' | 'select' | 'tree-select' | 'date-picker'
     // 标签文本
-    label: string;
+    label: string
     // 键名
-    prop: string;
+    prop: string
     // 组件属性
-    attrs?: IObject;
+    attrs?: IObject
     // 初始值
-    initialValue?: any;
+    initialValue?: any
     // 可选项(适用于select组件)
-    options?: { label: string; value: any }[];
-  }>;
+    options?: { label: string; value: any }[]
+  }>
   // 列选项
   tableColumns: Array<{
-    type?: "default" | "selection" | "index" | "expand";
-    label?: string;
-    prop?: string;
-    width?: string | number;
-    [key: string]: any;
-  }>;
+    type?: 'default' | 'selection' | 'index' | 'expand'
+    label?: string
+    prop?: string
+    width?: string | number
+    [key: string]: any
+  }>
 }
 const props = withDefaults(
   defineProps<{
-    selectConfig: ISelectConfig;
-    text?: string;
+    selectConfig: ISelectConfig
+    text?: string
   }>(),
   {
-    text: "",
-  }
-);
+    text: '',
+  },
+)
 
 // 自定义事件
 const emit = defineEmits<{
-  confirmClick: [selection: any[]];
-}>();
+  confirmClick: [selection: any[]]
+}>()
 
 // 主键
-const pk = props.selectConfig.pk ?? "id";
+const pk = props.selectConfig.pk ?? 'id'
 // 是否多选
-const isMultiple = props.selectConfig.multiple === true;
+const isMultiple = props.selectConfig.multiple === true
 // 宽度
-const width = props.selectConfig.width ?? "100%";
+const width = props.selectConfig.width ?? '100%'
 // 占位符
-const placeholder = props.selectConfig.placeholder ?? "请选择";
+const placeholder = props.selectConfig.placeholder ?? '请选择'
 // 是否显示弹出框
-const popoverVisible = ref(false);
+const popoverVisible = ref(false)
 // 加载状态
-const loading = ref(false);
+const loading = ref(false)
 // 数据总数
-const total = ref(0);
+const total = ref(0)
 // 列表数据
-const pageData = ref<IObject[]>([]);
+const pageData = ref<IObject[]>([])
 // 每页条数
-const pageSize = 10;
+const pageSize = 10
 // 搜索参数
 const queryParams = reactive<{
-  pageNum: number;
-  pageSize: number;
-  [key: string]: any;
+  pageNum: number
+  pageSize: number
+  [key: string]: any
 }>({
   pageNum: 1,
   pageSize: pageSize,
-});
+})
 
 // 计算popover的宽度
-const tableSelectRef = ref();
-const popoverWidth = ref(width);
+const tableSelectRef = ref()
+const popoverWidth = ref(width)
 useResizeObserver(tableSelectRef, (entries) => {
-  popoverWidth.value = `${entries[0].contentRect.width}px`;
-});
+  popoverWidth.value = `${entries[0].contentRect.width}px`
+})
 
 // 表单操作
-const formRef = ref<FormInstance>();
+const formRef = ref<FormInstance>()
 // 初始化搜索条件
 for (const item of props.selectConfig.formItems) {
-  queryParams[item.prop] = item.initialValue ?? "";
+  queryParams[item.prop] = item.initialValue ?? ''
 }
 // 重置操作
 function handleReset() {
-  formRef.value?.resetFields();
-  fetchPageData(true);
+  formRef.value?.resetFields()
+  fetchPageData(true)
 }
 // 查询操作
 function handleQuery() {
-  fetchPageData(true);
+  fetchPageData(true)
 }
 
 // 获取分页数据
 function fetchPageData(isRestart = false) {
-  loading.value = true;
+  loading.value = true
   if (isRestart) {
-    queryParams.pageNum = 1;
-    queryParams.pageSize = pageSize;
+    queryParams.pageNum = 1
+    queryParams.pageSize = pageSize
   }
   props.selectConfig
     .indexAction(queryParams)
     .then((data) => {
-      total.value = data.total;
-      pageData.value = data.list;
+      total.value = data.total
+      pageData.value = data.list
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 列表操作
-const tableRef = ref<TableInstance>();
+const tableRef = ref<TableInstance>()
 // 数据刷新后是否保留选项
 for (const item of props.selectConfig.tableColumns) {
-  if (item.type === "selection") {
-    item.reserveSelection = true;
-    break;
+  if (item.type === 'selection') {
+    item.reserveSelection = true
+    break
   }
 }
 // 选择
-const selectedItems = ref<IObject[]>([]);
+const selectedItems = ref<IObject[]>([])
 const confirmText = computed(() => {
-  return selectedItems.value.length > 0 ? `已选(${selectedItems.value.length})` : "确 定";
-});
+  return selectedItems.value.length > 0 ? `已选(${selectedItems.value.length})` : '确 定'
+})
 function handleSelect(selection: any[], _row: any) {
   if (isMultiple || selection.length === 0) {
     // 多选
-    selectedItems.value = selection;
+    selectedItems.value = selection
   } else {
     // 单选
-    selectedItems.value = [selection[selection.length - 1]];
-    tableRef.value?.clearSelection();
-    tableRef.value?.toggleRowSelection(selectedItems.value[0], true);
-    tableRef.value?.setCurrentRow(selectedItems.value[0]);
+    selectedItems.value = [selection[selection.length - 1]]
+    tableRef.value?.clearSelection()
+    tableRef.value?.toggleRowSelection(selectedItems.value[0], true)
+    tableRef.value?.setCurrentRow(selectedItems.value[0])
   }
 }
 function handleSelectAll(selection: any[]) {
   if (isMultiple) {
-    selectedItems.value = selection;
+    selectedItems.value = selection
   }
 }
 // 分页
 function handlePagination() {
-  fetchPageData();
+  fetchPageData()
 }
 
 // 弹出框
-const isInit = ref(false);
+const isInit = ref(false)
 // 显示
 function handleShow() {
   if (isInit.value === false) {
-    isInit.value = true;
-    fetchPageData();
+    isInit.value = true
+    fetchPageData()
   }
 }
 // 确定
 function handleConfirm() {
   if (selectedItems.value.length === 0) {
-    ElMessage.error("请选择数据");
-    return;
+    ElMessage.error('请选择数据')
+    return
   }
-  popoverVisible.value = false;
-  emit("confirmClick", selectedItems.value);
+  popoverVisible.value = false
+  emit('confirmClick', selectedItems.value)
 }
 // 清空
 function handleClear() {
-  tableRef.value?.clearSelection();
-  selectedItems.value = [];
+  tableRef.value?.clearSelection()
+  selectedItems.value = []
 }
 // 关闭
 function handleClose() {
-  popoverVisible.value = false;
+  popoverVisible.value = false
 }
-const popoverContentRef = ref();
+const popoverContentRef = ref()
 /* onClickOutside(tableSelectRef, () => (popoverVisible.value = false), {
   ignore: [popoverContentRef],
 }); */

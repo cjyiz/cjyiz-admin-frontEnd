@@ -40,7 +40,7 @@
         <el-table-column label="状态">
           <template #default="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">
-              {{ scope.row.status === 1 ? "启用" : "禁用" }}
+              {{ scope.row.status === 1 ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -130,79 +130,79 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "DictItem",
+  name: 'DictItem',
   inherititems: false,
-});
+})
 
-import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from "@/api/system/dict.api";
+import DictAPI, { DictItemPageQuery, DictItemPageVO, DictItemForm } from '@/api/system/dict.api'
 
-const route = useRoute();
+const route = useRoute()
 
-const dictCode = ref(route.query.dictCode as string);
+const dictCode = ref(route.query.dictCode as string)
 
-const queryFormRef = ref();
-const dataFormRef = ref();
+const queryFormRef = ref()
+const dataFormRef = ref()
 
-const loading = ref(false);
-const ids = ref<number[]>([]);
-const total = ref(0);
+const loading = ref(false)
+const ids = ref<number[]>([])
+const total = ref(0)
 
 const queryParams = reactive<DictItemPageQuery>({
   pageNum: 1,
   pageSize: 10,
-});
+})
 
-const tableData = ref<DictItemPageVO[]>();
+const tableData = ref<DictItemPageVO[]>()
 
 const dialog = reactive({
-  title: "",
+  title: '',
   visible: false,
-});
+})
 
-const formData = reactive<DictItemForm>({});
+const formData = reactive<DictItemForm>({})
 
 const computedRules = computed(() => {
   const rules: Partial<Record<string, any>> = {
-    value: [{ required: true, message: "请输入字典值", trigger: "blur" }],
-    label: [{ required: true, message: "请输入字典标签", trigger: "blur" }],
-  };
-  return rules;
-});
+    value: [{ required: true, message: '请输入字典值', trigger: 'blur' }],
+    label: [{ required: true, message: '请输入字典标签', trigger: 'blur' }],
+  }
+  return rules
+})
 
 // 查询
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   DictAPI.getDictItemPage(dictCode.value, queryParams)
     .then((data) => {
-      tableData.value = data.list;
-      total.value = data.total;
+      tableData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 重置查询
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  handleQuery();
+  queryFormRef.value.resetFields()
+  queryParams.pageNum = 1
+  handleQuery()
 }
 
 // 行选择
 function handleSelectionChange(selection: any) {
-  ids.value = selection.map((item: any) => item.id);
+  ids.value = selection.map((item: any) => item.id)
 }
 
 // 打开弹窗
 function handleOpenDialog(row?: DictItemPageVO) {
-  dialog.visible = true;
-  dialog.title = row ? "编辑字典项" : "新增字典项";
+  dialog.visible = true
+  dialog.title = row ? '编辑字典项' : '新增字典项'
 
   if (row?.id) {
     DictAPI.getDictItemFormData(dictCode.value, row.id).then((data) => {
-      Object.assign(formData, data);
-    });
+      Object.assign(formData, data)
+    })
   }
 }
 
@@ -210,40 +210,40 @@ function handleOpenDialog(row?: DictItemPageVO) {
 function handleSubmitClick() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
-      loading.value = true;
-      const id = formData.id;
-      formData.dictCode = dictCode.value;
+      loading.value = true
+      const id = formData.id
+      formData.dictCode = dictCode.value
       if (id) {
         DictAPI.updateDictItem(dictCode.value, id, formData)
           .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleQuery();
+            ElMessage.success('修改成功')
+            handleCloseDialog()
+            handleQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       } else {
         DictAPI.createDictItem(dictCode.value, formData)
           .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleQuery();
+            ElMessage.success('新增成功')
+            handleCloseDialog()
+            handleQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       }
     }
-  });
+  })
 }
 
 // 关闭弹窗
 function handleCloseDialog() {
-  dialog.visible = false;
+  dialog.visible = false
 
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  dataFormRef.value.resetFields()
+  dataFormRef.value.clearValidate()
 
-  formData.id = undefined;
-  formData.sort = 1;
-  formData.status = 1;
+  formData.id = undefined
+  formData.sort = 1
+  formData.status = 1
 }
 /**
  * 删除字典
@@ -251,35 +251,35 @@ function handleCloseDialog() {
  * @param id 字典ID
  */
 function handleDelete(id?: number) {
-  const itemIds = [id || ids.value].join(",");
+  const itemIds = [id || ids.value].join(',')
   if (!itemIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
+    ElMessage.warning('请勾选删除项')
+    return
   }
-  ElMessageBox.confirm("确认删除已选中的数据项?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(
     () => {
       DictAPI.deleteDictItems(dictCode.value, itemIds).then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      });
+        ElMessage.success('删除成功')
+        handleResetQuery()
+      })
     },
     () => {
-      ElMessage.info("已取消删除");
-    }
-  );
+      ElMessage.info('已取消删除')
+    },
+  )
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 
 // 同一路由参数变化时更新数据
 onBeforeRouteUpdate((to) => {
-  queryParams.dictCode = to.query.dictCode as string;
-  handleQuery();
-});
+  queryParams.dictCode = to.query.dictCode as string
+  handleQuery()
+})
 </script>

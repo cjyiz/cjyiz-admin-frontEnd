@@ -6,7 +6,7 @@
     :before-close="handleCloseDrawer"
   >
     <section class="config-section">
-      <el-divider>{{ $t("settings.theme") }}</el-divider>
+      <el-divider>{{ $t('settings.theme') }}</el-divider>
 
       <div class="flex-center">
         <el-switch
@@ -20,10 +20,10 @@
 
     <!-- 界面设置 -->
     <section class="config-section">
-      <el-divider>{{ $t("settings.interface") }}</el-divider>
+      <el-divider>{{ $t('settings.interface') }}</el-divider>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.themeColor") }}</span>
+        <span class="text-xs">{{ $t('settings.themeColor') }}</span>
         <el-color-picker
           v-model="selectedThemeColor"
           :predefine="colorPresets"
@@ -32,27 +32,27 @@
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.tagsView") }}</span>
+        <span class="text-xs">{{ $t('settings.tagsView') }}</span>
         <el-switch v-model="settingsStore.tagsView" />
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.sidebarLogo") }}</span>
+        <span class="text-xs">{{ $t('settings.sidebarLogo') }}</span>
         <el-switch v-model="settingsStore.sidebarLogo" />
       </div>
 
       <div class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.watermark") }}</span>
+        <span class="text-xs">{{ $t('settings.watermark') }}</span>
         <el-switch v-model="settingsStore.watermarkEnabled" />
       </div>
       <div v-if="!isDark" class="config-item flex-x-between">
-        <span class="text-xs">{{ $t("settings.sidebarColorScheme") }}</span>
+        <span class="text-xs">{{ $t('settings.sidebarColorScheme') }}</span>
         <el-radio-group v-model="sidebarColor" @change="changeSidebarColor">
           <el-radio :value="SidebarColor.CLASSIC_BLUE">
-            {{ $t("settings.classicBlue") }}
+            {{ $t('settings.classicBlue') }}
           </el-radio>
           <el-radio :value="SidebarColor.MINIMAL_WHITE">
-            {{ $t("settings.minimalWhite") }}
+            {{ $t('settings.minimalWhite') }}
           </el-radio>
         </el-radio-group>
       </div>
@@ -60,47 +60,47 @@
 
     <!-- 布局设置 -->
     <section class="config-section">
-      <el-divider>{{ $t("settings.navigation") }}</el-divider>
+      <el-divider>{{ $t('settings.navigation') }}</el-divider>
       <LayoutSelect v-model="settingsStore.layout" @update:model-value="handleLayoutChange" />
     </section>
   </el-drawer>
 </template>
 
 <script setup lang="ts">
-import { LayoutMode } from "@/enums/settings/layout.enum";
-import { ThemeMode } from "@/enums/settings/theme.enum";
-import { SidebarColor } from "@/enums/settings/theme.enum";
-import { useSettingsStore, usePermissionStore, useAppStore } from "@/store";
+import { LayoutMode } from '@/enums/settings/layout.enum'
+import { ThemeMode } from '@/enums/settings/theme.enum'
+import { SidebarColor } from '@/enums/settings/theme.enum'
+import { useSettingsStore, usePermissionStore, useAppStore } from '@/store'
 // 颜色预设
 const colorPresets = [
-  "#4080FF",
-  "#626AEF",
-  "#ff4500",
-  "#ff8c00",
-  "#00ced1",
-  "#1e90ff",
-  "#c71585",
-  "rgb(255, 120, 0)",
-  "hsva(120, 40, 94)",
-];
+  '#4080FF',
+  '#626AEF',
+  '#ff4500',
+  '#ff8c00',
+  '#00ced1',
+  '#1e90ff',
+  '#c71585',
+  'rgb(255, 120, 0)',
+  'hsva(120, 40, 94)',
+]
 
-const route = useRoute();
-const appStore = useAppStore();
-const settingsStore = useSettingsStore();
-const permissionStore = usePermissionStore();
+const route = useRoute()
+const appStore = useAppStore()
+const settingsStore = useSettingsStore()
+const permissionStore = usePermissionStore()
 
-const isDark = ref<boolean>(settingsStore.theme === ThemeMode.DARK);
-const sidebarColor = ref(settingsStore.sidebarColorScheme);
+const isDark = ref<boolean>(settingsStore.theme === ThemeMode.DARK)
+const sidebarColor = ref(settingsStore.sidebarColorScheme)
 
 const selectedThemeColor = computed({
   get: () => settingsStore.themeColor,
   set: (value) => settingsStore.changeThemeColor(value),
-});
+})
 
 const drawerVisible = computed({
   get: () => settingsStore.settingsVisible,
   set: (value) => (settingsStore.settingsVisible = value),
-});
+})
 
 /**
  * 处理主题切换
@@ -108,8 +108,8 @@ const drawerVisible = computed({
  * @param isDark 是否启用暗黑模式
  */
 const handleThemeChange = (isDark: string | number | boolean) => {
-  settingsStore.changeTheme(isDark ? ThemeMode.DARK : ThemeMode.LIGHT);
-};
+  settingsStore.changeTheme(isDark ? ThemeMode.DARK : ThemeMode.LIGHT)
+}
 
 /**
  * 更改侧边栏颜色
@@ -117,8 +117,8 @@ const handleThemeChange = (isDark: string | number | boolean) => {
  * @param val 颜色方案名称
  */
 const changeSidebarColor = (val: any) => {
-  settingsStore.changeSidebarColor(val);
-};
+  settingsStore.changeSidebarColor(val)
+}
 
 /**
  * 切换布局
@@ -126,14 +126,14 @@ const changeSidebarColor = (val: any) => {
  * @param layout - 布局模式
  */
 const handleLayoutChange = (layout: LayoutMode) => {
-  settingsStore.changeLayout(layout);
+  settingsStore.changeLayout(layout)
   if (layout === LayoutMode.MIX && route.name) {
-    const topLevelRoute = findTopLevelRoute(permissionStore.routes, route.name as string);
+    const topLevelRoute = findTopLevelRoute(permissionStore.routes, route.name as string)
     if (appStore.activeTopMenuPath !== topLevelRoute.path) {
-      appStore.activeTopMenu(topLevelRoute.path);
+      appStore.activeTopMenu(topLevelRoute.path)
     }
   }
-};
+}
 
 /**
  * 查找路由的顶层父路由
@@ -142,38 +142,38 @@ const handleLayoutChange = (layout: LayoutMode) => {
  * @param findName 查找的名称
  */
 function findTopLevelRoute(tree: any[], findName: string) {
-  let parentMap: any = {};
+  let parentMap: any = {}
 
   function buildParentMap(node: any, parent: any) {
-    parentMap[node.name] = parent;
+    parentMap[node.name] = parent
 
     if (node.children) {
       for (let i = 0; i < node.children.length; i++) {
-        buildParentMap(node.children[i], node);
+        buildParentMap(node.children[i], node)
       }
     }
   }
 
   for (let i = 0; i < tree.length; i++) {
-    buildParentMap(tree[i], null);
+    buildParentMap(tree[i], null)
   }
 
-  let currentNode = parentMap[findName];
+  let currentNode = parentMap[findName]
   while (currentNode) {
     if (!parentMap[currentNode.name]) {
-      return currentNode;
+      return currentNode
     }
-    currentNode = parentMap[currentNode.name];
+    currentNode = parentMap[currentNode.name]
   }
-  return null;
+  return null
 }
 
 /**
  * 关闭抽屉前的回调
  */
 const handleCloseDrawer = () => {
-  settingsStore.settingsVisible = false;
-};
+  settingsStore.settingsVisible = false
+}
 </script>
 
 <style lang="scss" scoped>

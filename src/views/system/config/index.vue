@@ -131,151 +131,151 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "Config",
+  name: 'Config',
   inheritAttrs: false,
-});
+})
 
-import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from "@/api/system/config.api";
+import ConfigAPI, { ConfigPageVO, ConfigForm, ConfigPageQuery } from '@/api/system/config.api'
 
-const queryFormRef = ref();
-const dataFormRef = ref();
+const queryFormRef = ref()
+const dataFormRef = ref()
 
-const loading = ref(false);
-const selectIds = ref<number[]>([]);
-const total = ref(0);
+const loading = ref(false)
+const selectIds = ref<number[]>([])
+const total = ref(0)
 
 const queryParams = reactive<ConfigPageQuery>({
   pageNum: 1,
   pageSize: 10,
-  keywords: "",
-});
+  keywords: '',
+})
 
 // 系统配置表格数据
-const pageData = ref<ConfigPageVO[]>([]);
+const pageData = ref<ConfigPageVO[]>([])
 
 const dialog = reactive({
-  title: "",
+  title: '',
   visible: false,
-});
+})
 
 const formData = reactive<ConfigForm>({
   id: undefined,
-  configName: "",
-  configKey: "",
-  configValue: "",
-  remark: "",
-});
+  configName: '',
+  configKey: '',
+  configValue: '',
+  remark: '',
+})
 
 const rules = reactive({
-  configName: [{ required: true, message: "请输入系统配置名称", trigger: "blur" }],
-  configKey: [{ required: true, message: "请输入系统配置编码", trigger: "blur" }],
-  configValue: [{ required: true, message: "请输入系统配置值", trigger: "blur" }],
-});
+  configName: [{ required: true, message: '请输入系统配置名称', trigger: 'blur' }],
+  configKey: [{ required: true, message: '请输入系统配置编码', trigger: 'blur' }],
+  configValue: [{ required: true, message: '请输入系统配置值', trigger: 'blur' }],
+})
 
 // 查询系统配置
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   ConfigAPI.getPage(queryParams)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+      pageData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 重置查询
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  handleQuery();
+  queryFormRef.value.resetFields()
+  queryParams.pageNum = 1
+  handleQuery()
 }
 
 // 行复选框选中项变化
 function handleSelectionChange(selection: any) {
-  selectIds.value = selection.map((item: any) => item.id);
+  selectIds.value = selection.map((item: any) => item.id)
 }
 
 // 打开系统配置弹窗
 function handleOpenDialog(id?: number) {
-  dialog.visible = true;
+  dialog.visible = true
   if (id) {
-    dialog.title = "修改系统配置";
+    dialog.title = '修改系统配置'
     ConfigAPI.getFormData(id).then((data) => {
-      Object.assign(formData, data);
-    });
+      Object.assign(formData, data)
+    })
   } else {
-    dialog.title = "新增系统配置";
-    formData.id = undefined;
+    dialog.title = '新增系统配置'
+    formData.id = undefined
   }
 }
 
 // 刷新缓存(防抖)
 const handleRefreshCache = useDebounceFn(() => {
   ConfigAPI.refreshCache().then(() => {
-    ElMessage.success("刷新成功");
-  });
-}, 1000);
+    ElMessage.success('刷新成功')
+  })
+}, 1000)
 
 // 系统配置表单提交
 function handleSubmit() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
-      loading.value = true;
-      const id = formData.id;
+      loading.value = true
+      const id = formData.id
       if (id) {
         ConfigAPI.update(id, formData)
           .then(() => {
-            ElMessage.success("修改成功");
-            handleCloseDialog();
-            handleResetQuery();
+            ElMessage.success('修改成功')
+            handleCloseDialog()
+            handleResetQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       } else {
         ConfigAPI.create(formData)
           .then(() => {
-            ElMessage.success("新增成功");
-            handleCloseDialog();
-            handleResetQuery();
+            ElMessage.success('新增成功')
+            handleCloseDialog()
+            handleResetQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       }
     }
-  });
+  })
 }
 
 // 重置表单
 function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-  formData.id = undefined;
+  dataFormRef.value.resetFields()
+  dataFormRef.value.clearValidate()
+  formData.id = undefined
 }
 
 // 关闭系统配置弹窗
 function handleCloseDialog() {
-  dialog.visible = false;
-  resetForm();
+  dialog.visible = false
+  resetForm()
 }
 
 // 删除系统配置
 function handleDelete(id: number) {
-  ElMessageBox.confirm("确认删除该项配置?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确认删除该项配置?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(() => {
-    loading.value = true;
+    loading.value = true
     ConfigAPI.deleteById(id)
       .then(() => {
-        ElMessage.success("删除成功");
-        handleResetQuery();
+        ElMessage.success('删除成功')
+        handleResetQuery()
       })
-      .finally(() => (loading.value = false));
-  });
+      .finally(() => (loading.value = false))
+  })
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>

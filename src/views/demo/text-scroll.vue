@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import TextScroll from "@/components/TextScroll/index.vue";
+import TextScroll from '@/components/TextScroll/index.vue'
 </script>
 
 <style lang="scss" scoped>

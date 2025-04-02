@@ -230,148 +230,148 @@
 </template>
 
 <script setup lang="ts">
-import { useThrottleFn } from "@vueuse/core";
-import type { FormInstance, FormRules } from "element-plus";
-import { nextTick, reactive, ref, watch, watchEffect } from "vue";
-import type { IModalConfig, IObject } from "./types";
+import { useThrottleFn } from '@vueuse/core'
+import type { FormInstance, FormRules } from 'element-plus'
+import { nextTick, reactive, ref, watch, watchEffect } from 'vue'
+import type { IModalConfig, IObject } from './types'
 
 // 定义接收的属性
 const props = defineProps<{
-  modalConfig: IModalConfig;
-}>();
+  modalConfig: IModalConfig
+}>()
 // 自定义事件
 const emit = defineEmits<{
-  submitClick: [];
-}>();
+  submitClick: []
+}>()
 
-const pk = props.modalConfig.pk ?? "id";
-const modalVisible = ref(false);
-const formRef = ref<FormInstance>();
-const formItems = reactive(props.modalConfig.formItems);
-const formData = reactive<IObject>({});
-const formRules: FormRules = {};
-const formDisable = ref(false);
-const prepareFuncs = [];
+const pk = props.modalConfig.pk ?? 'id'
+const modalVisible = ref(false)
+const formRef = ref<FormInstance>()
+const formItems = reactive(props.modalConfig.formItems)
+const formData = reactive<IObject>({})
+const formRules: FormRules = {}
+const formDisable = ref(false)
+const prepareFuncs = []
 for (const item of formItems) {
-  item.initFn && item.initFn(item);
-  formData[item.prop] = item.initialValue ?? "";
-  formRules[item.prop] = item.rules ?? [];
+  item.initFn && item.initFn(item)
+  formData[item.prop] = item.initialValue ?? ''
+  formRules[item.prop] = item.rules ?? []
 
   if (item.watch !== undefined) {
     prepareFuncs.push(() => {
       watch(
         () => formData[item.prop],
         (newValue, oldValue) => {
-          item.watch && item.watch(newValue, oldValue, formData, formItems);
-        }
-      );
-    });
+          item.watch && item.watch(newValue, oldValue, formData, formItems)
+        },
+      )
+    })
   }
 
   if (item.computed !== undefined) {
     prepareFuncs.push(() => {
       watchEffect(() => {
-        item.computed && (formData[item.prop] = item.computed(formData));
-      });
-    });
+        item.computed && (formData[item.prop] = item.computed(formData))
+      })
+    })
   }
 
   if (item.watchEffect !== undefined) {
     prepareFuncs.push(() => {
       watchEffect(() => {
-        item.watchEffect && item.watchEffect(formData);
-      });
-    });
+        item.watchEffect && item.watchEffect(formData)
+      })
+    })
   }
 }
-prepareFuncs.forEach((func) => func());
+prepareFuncs.forEach((func) => func())
 
 // 获取表单数据
 function getFormData(key?: string) {
-  return key === undefined ? formData : (formData[key] ?? undefined);
+  return key === undefined ? formData : (formData[key] ?? undefined)
 }
 
 // 设置表单值
 function setFormData(data: IObject) {
   for (const key in formData) {
     if (Object.prototype.hasOwnProperty.call(formData, key) && key in data) {
-      formData[key] = data[key];
+      formData[key] = data[key]
     }
   }
   if (Object.prototype.hasOwnProperty.call(data, pk)) {
-    formData[pk] = data[pk];
+    formData[pk] = data[pk]
   }
 }
 
 // 设置表单项值
 function setFormItemData(key: string, value: any) {
-  formData[key] = value;
+  formData[key] = value
 }
 
 // 显示modal
 function setModalVisible(data: IObject = {}) {
-  modalVisible.value = true;
+  modalVisible.value = true
   // nextTick解决赋值后重置表单无效问题
   nextTick(() => {
-    Object.values(data).length > 0 && setFormData(data);
-  });
+    Object.values(data).length > 0 && setFormData(data)
+  })
 }
 
 // 表单提交
 const handleSubmit = useThrottleFn(() => {
   formRef.value?.validate((valid: boolean) => {
     if (valid) {
-      if (typeof props.modalConfig.beforeSubmit === "function") {
-        props.modalConfig.beforeSubmit(formData);
+      if (typeof props.modalConfig.beforeSubmit === 'function') {
+        props.modalConfig.beforeSubmit(formData)
       }
       props.modalConfig.formAction(formData).then(() => {
-        let msg = "操作成功";
-        if (props.modalConfig.component === "drawer") {
+        let msg = '操作成功'
+        if (props.modalConfig.component === 'drawer') {
           if (props.modalConfig.drawer?.title) {
-            msg = `${props.modalConfig.drawer?.title}成功`;
+            msg = `${props.modalConfig.drawer?.title}成功`
           }
         } else {
           if (props.modalConfig.dialog?.title) {
-            msg = `${props.modalConfig.dialog?.title}成功`;
+            msg = `${props.modalConfig.dialog?.title}成功`
           }
         }
-        ElMessage.success(msg);
-        emit("submitClick");
-        handleClose();
-      });
+        ElMessage.success(msg)
+        emit('submitClick')
+        handleClose()
+      })
     }
-  });
-}, 3000);
+  })
+}, 3000)
 
 // 隐藏弹窗
 function handleClose() {
-  modalVisible.value = false;
+  modalVisible.value = false
 }
 
 // 关闭弹窗
 function handleCloseModal() {
-  formRef.value?.resetFields();
+  formRef.value?.resetFields()
   nextTick(() => {
-    formRef.value?.clearValidate();
-  });
+    formRef.value?.clearValidate()
+  })
 }
 
 // 禁用表单--用于详情时候用
 function handleDisabled(disable: boolean) {
-  formDisable.value = disable;
+  formDisable.value = disable
   props.modalConfig.formItems.forEach((item) => {
     if (item) {
       if (item.attrs) {
-        item.attrs.disabled = disable;
+        item.attrs.disabled = disable
       } else {
-        item.attrs = { disabled: disable };
+        item.attrs = { disabled: disable }
       }
     }
-  });
+  })
 }
 
 // 暴露的属性和方法
-defineExpose({ setModalVisible, getFormData, setFormData, setFormItemData, handleDisabled });
+defineExpose({ setModalVisible, getFormData, setFormData, setFormItemData, handleDisabled })
 </script>
 
 <style lang="scss" scoped></style>

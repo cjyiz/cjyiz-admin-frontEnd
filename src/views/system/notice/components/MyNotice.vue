@@ -103,57 +103,57 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "MyNotice",
+  name: 'MyNotice',
   inheritAttrs: false,
-});
+})
 
-import NoticeAPI, { NoticePageVO, NoticePageQuery, NoticeDetailVO } from "@/api/system/notice.api";
+import NoticeAPI, { NoticePageVO, NoticePageQuery, NoticeDetailVO } from '@/api/system/notice.api'
 
-const queryFormRef = ref();
-const pageData = ref<NoticePageVO[]>([]);
+const queryFormRef = ref()
+const pageData = ref<NoticePageVO[]>([])
 
-const loading = ref(false);
-const total = ref(0);
+const loading = ref(false)
+const total = ref(0)
 
 const queryParams = reactive<NoticePageQuery>({
   pageNum: 1,
   pageSize: 10,
-});
+})
 
-const noticeDialogVisible = ref(false);
-const noticeDetail = ref<NoticeDetailVO | null>(null);
+const noticeDialogVisible = ref(false)
+const noticeDetail = ref<NoticeDetailVO | null>(null)
 
 // 查询通知公告
 function handleQuery() {
-  loading.value = true;
+  loading.value = true
   NoticeAPI.getMyNoticePage(queryParams)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+      pageData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 重置通知公告查询
 function handleResetQuery() {
-  queryFormRef.value!.resetFields();
-  queryParams.pageNum = 1;
-  handleQuery();
+  queryFormRef.value!.resetFields()
+  queryParams.pageNum = 1
+  handleQuery()
 }
 
 // 阅读通知公告
 function handleReadNotice(id: string) {
   NoticeAPI.getDetail(id).then((data) => {
-    noticeDialogVisible.value = true;
-    noticeDetail.value = data;
-  });
+    noticeDialogVisible.value = true
+    noticeDetail.value = data
+  })
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>
 
 <style lang="scss" scoped>

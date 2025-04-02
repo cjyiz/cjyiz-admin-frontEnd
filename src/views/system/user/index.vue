@@ -105,7 +105,7 @@
             <el-table-column label="状态" align="center" prop="status" width="80">
               <template #default="scope">
                 <el-tag :type="scope.row.status == 1 ? 'success' : 'info'">
-                  {{ scope.row.status == 1 ? "正常" : "禁用" }}
+                  {{ scope.row.status == 1 ? '正常' : '禁用' }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -238,121 +238,121 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/modules/app.store";
-import { DeviceEnum } from "@/enums/settings/device.enum";
+import { useAppStore } from '@/store/modules/app.store'
+import { DeviceEnum } from '@/enums/settings/device.enum'
 
-import UserAPI, { UserForm, UserPageQuery, UserPageVO } from "@/api/system/user.api";
-import DeptAPI from "@/api/system/dept.api";
-import RoleAPI from "@/api/system/role.api";
+import UserAPI, { UserForm, UserPageQuery, UserPageVO } from '@/api/system/user.api'
+import DeptAPI from '@/api/system/dept.api'
+import RoleAPI from '@/api/system/role.api'
 
-import DeptTree from "./components/DeptTree.vue";
-import UserImport from "./components/UserImport.vue";
+import DeptTree from './components/DeptTree.vue'
+import UserImport from './components/UserImport.vue'
 
 defineOptions({
-  name: "User",
+  name: 'User',
   inheritAttrs: false,
-});
+})
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
-const queryFormRef = ref();
-const userFormRef = ref();
+const queryFormRef = ref()
+const userFormRef = ref()
 
 const queryParams = reactive<UserPageQuery>({
   pageNum: 1,
   pageSize: 10,
-});
+})
 
-const pageData = ref<UserPageVO[]>();
-const total = ref(0);
-const loading = ref(false);
+const pageData = ref<UserPageVO[]>()
+const total = ref(0)
+const loading = ref(false)
 
 const dialog = reactive({
   visible: false,
-  title: "新增用户",
-});
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+  title: '新增用户',
+})
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? '600px' : '90%'))
 
 const formData = reactive<UserForm>({
   status: 1,
-});
+})
 
 const rules = reactive({
-  username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
-  nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
-  deptId: [{ required: true, message: "所属部门不能为空", trigger: "blur" }],
-  roleIds: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
+  username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+  nickname: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
+  roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
   email: [
     {
       pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
-      message: "请输入正确的邮箱地址",
-      trigger: "blur",
+      message: '请输入正确的邮箱地址',
+      trigger: 'blur',
     },
   ],
   mobile: [
     {
       pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-      message: "请输入正确的手机号码",
-      trigger: "blur",
+      message: '请输入正确的手机号码',
+      trigger: 'blur',
     },
   ],
-});
+})
 
 // 选中的用户ID
-const selectIds = ref<number[]>([]);
+const selectIds = ref<number[]>([])
 // 部门下拉数据源
-const deptOptions = ref<OptionType[]>();
+const deptOptions = ref<OptionType[]>()
 // 角色下拉数据源
-const roleOptions = ref<OptionType[]>();
+const roleOptions = ref<OptionType[]>()
 // 导入弹窗显示状态
-const importDialogVisible = ref(false);
+const importDialogVisible = ref(false)
 
 // 查询
 async function handleQuery() {
-  loading.value = true;
+  loading.value = true
   UserAPI.getPage(queryParams)
     .then((data) => {
-      pageData.value = data.list;
-      total.value = data.total;
+      pageData.value = data.list
+      total.value = data.total
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 // 重置查询
 function handleResetQuery() {
-  queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
-  queryParams.deptId = undefined;
-  queryParams.createTime = undefined;
-  handleQuery();
+  queryFormRef.value.resetFields()
+  queryParams.pageNum = 1
+  queryParams.deptId = undefined
+  queryParams.createTime = undefined
+  handleQuery()
 }
 
 // 选中项发生变化
 function handleSelectionChange(selection: any[]) {
-  selectIds.value = selection.map((item) => item.id);
+  selectIds.value = selection.map((item) => item.id)
 }
 
 // 重置密码
 function hancleResetPassword(row: UserPageVO) {
-  ElMessageBox.prompt("请输入用户【" + row.username + "】的新密码", "重置密码", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
+  ElMessageBox.prompt('请输入用户【' + row.username + '】的新密码', '重置密码', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
   }).then(
     ({ value }) => {
       if (!value || value.length < 6) {
-        ElMessage.warning("密码至少需要6位字符，请重新输入");
-        return false;
+        ElMessage.warning('密码至少需要6位字符，请重新输入')
+        return false
       }
       UserAPI.resetPassword(row.id, value).then(() => {
-        ElMessage.success("密码重置成功，新密码是：" + value);
-      });
+        ElMessage.success('密码重置成功，新密码是：' + value)
+      })
     },
     () => {
-      ElMessage.info("已取消重置密码");
-    }
-  );
+      ElMessage.info('已取消重置密码')
+    },
+  )
 }
 
 /**
@@ -361,58 +361,58 @@ function hancleResetPassword(row: UserPageVO) {
  * @param id 用户ID
  */
 async function handleOpenDialog(id?: number) {
-  dialog.visible = true;
+  dialog.visible = true
   // 加载角色下拉数据源
-  roleOptions.value = await RoleAPI.getOptions();
+  roleOptions.value = await RoleAPI.getOptions()
   // 加载部门下拉数据源
-  deptOptions.value = await DeptAPI.getOptions();
+  deptOptions.value = await DeptAPI.getOptions()
 
   if (id) {
-    dialog.title = "修改用户";
+    dialog.title = '修改用户'
     UserAPI.getFormData(id).then((data) => {
-      Object.assign(formData, { ...data });
-    });
+      Object.assign(formData, { ...data })
+    })
   } else {
-    dialog.title = "新增用户";
+    dialog.title = '新增用户'
   }
 }
 
 // 关闭弹窗
 function handleCloseDialog() {
-  dialog.visible = false;
-  userFormRef.value.resetFields();
-  userFormRef.value.clearValidate();
+  dialog.visible = false
+  userFormRef.value.resetFields()
+  userFormRef.value.clearValidate()
 
-  formData.id = undefined;
-  formData.status = 1;
+  formData.id = undefined
+  formData.status = 1
 }
 
 // 提交用户表单（防抖）
 const handleSubmit = useDebounceFn(() => {
   userFormRef.value.validate((valid: boolean) => {
     if (valid) {
-      const userId = formData.id;
-      loading.value = true;
+      const userId = formData.id
+      loading.value = true
       if (userId) {
         UserAPI.update(userId, formData)
           .then(() => {
-            ElMessage.success("修改用户成功");
-            handleCloseDialog();
-            handleResetQuery();
+            ElMessage.success('修改用户成功')
+            handleCloseDialog()
+            handleResetQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       } else {
         UserAPI.create(formData)
           .then(() => {
-            ElMessage.success("新增用户成功");
-            handleCloseDialog();
-            handleResetQuery();
+            ElMessage.success('新增用户成功')
+            handleCloseDialog()
+            handleResetQuery()
           })
-          .finally(() => (loading.value = false));
+          .finally(() => (loading.value = false))
       }
     }
-  });
-}, 1000);
+  })
+}, 1000)
 
 /**
  * 删除用户
@@ -420,61 +420,61 @@ const handleSubmit = useDebounceFn(() => {
  * @param id  用户ID
  */
 function handleDelete(id?: number) {
-  const userIds = [id || selectIds.value].join(",");
+  const userIds = [id || selectIds.value].join(',')
   if (!userIds) {
-    ElMessage.warning("请勾选删除项");
-    return;
+    ElMessage.warning('请勾选删除项')
+    return
   }
 
-  ElMessageBox.confirm("确认删除用户?", "警告", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确认删除用户?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(
     function () {
-      loading.value = true;
+      loading.value = true
       UserAPI.deleteByIds(userIds)
         .then(() => {
-          ElMessage.success("删除成功");
-          handleResetQuery();
+          ElMessage.success('删除成功')
+          handleResetQuery()
         })
-        .finally(() => (loading.value = false));
+        .finally(() => (loading.value = false))
     },
     function () {
-      ElMessage.info("已取消删除");
-    }
-  );
+      ElMessage.info('已取消删除')
+    },
+  )
 }
 
 // 打开导入弹窗
 function handleOpenImportDialog() {
-  importDialogVisible.value = true;
+  importDialogVisible.value = true
 }
 
 // 导出用户
 function handleExport() {
   UserAPI.export(queryParams).then((response: any) => {
-    const fileData = response.data;
-    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+    const fileData = response.data
+    const fileName = decodeURI(response.headers['content-disposition'].split(';')[1].split('=')[1])
     const fileType =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
 
-    const blob = new Blob([fileData], { type: fileType });
-    const downloadUrl = window.URL.createObjectURL(blob);
+    const blob = new Blob([fileData], { type: fileType })
+    const downloadUrl = window.URL.createObjectURL(blob)
 
-    const downloadLink = document.createElement("a");
-    downloadLink.href = downloadUrl;
-    downloadLink.download = fileName;
+    const downloadLink = document.createElement('a')
+    downloadLink.href = downloadUrl
+    downloadLink.download = fileName
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
 
-    document.body.removeChild(downloadLink);
-    window.URL.revokeObjectURL(downloadUrl);
-  });
+    document.body.removeChild(downloadLink)
+    window.URL.revokeObjectURL(downloadUrl)
+  })
 }
 
 onMounted(() => {
-  handleQuery();
-});
+  handleQuery()
+})
 </script>

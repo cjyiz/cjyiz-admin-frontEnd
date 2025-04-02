@@ -87,85 +87,85 @@
 </template>
 
 <script setup lang="ts">
-import NoticeAPI, { NoticePageVO, NoticeDetailVO } from "@/api/system/notice.api";
-import router from "@/router";
+import NoticeAPI, { NoticePageVO, NoticeDetailVO } from '@/api/system/notice.api'
+import router from '@/router'
 
-const noticeList = ref<NoticePageVO[]>([]);
-const noticeDialogVisible = ref(false);
-const noticeDetail = ref<NoticeDetailVO | null>(null);
+const noticeList = ref<NoticePageVO[]>([])
+const noticeDialogVisible = ref(false)
+const noticeDetail = ref<NoticeDetailVO | null>(null)
 
-import { useStomp } from "@/hooks/useStomp";
-const { subscribe, unsubscribe, isConnected } = useStomp();
+import { useStomp } from '@/hooks/useStomp'
+const { subscribe, unsubscribe, isConnected } = useStomp()
 
 watch(
   () => isConnected.value,
   (connected) => {
     if (connected) {
-      subscribe("/user/queue/message", (message) => {
-        console.log("收到通知消息：", message);
-        const data = JSON.parse(message.body);
-        const id = data.id;
+      subscribe('/user/queue/message', (message) => {
+        console.log('收到通知消息：', message)
+        const data = JSON.parse(message.body)
+        const id = data.id
         if (!noticeList.value.some((notice) => notice.id == id)) {
           noticeList.value.unshift({
             id,
             title: data.title,
             type: data.type,
             publishTime: data.publishTime,
-          });
+          })
 
           ElNotification({
-            title: "您收到一条新的通知消息！",
+            title: '您收到一条新的通知消息！',
             message: data.title,
-            type: "success",
-            position: "bottom-right",
-          });
+            type: 'success',
+            position: 'bottom-right',
+          })
         }
-      });
+      })
     }
-  }
-);
+  },
+)
 
 /**
  * 获取我的通知公告
  */
 function featchMyNotice() {
   NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then((data) => {
-    noticeList.value = data.list;
-  });
+    noticeList.value = data.list
+  })
 }
 
 // 阅读通知公告
 function handleReadNotice(id: string) {
   NoticeAPI.getDetail(id).then((data) => {
-    noticeDialogVisible.value = true;
-    noticeDetail.value = data;
+    noticeDialogVisible.value = true
+    noticeDetail.value = data
     // 标记为已读
-    const index = noticeList.value.findIndex((notice) => notice.id === id);
+    const index = noticeList.value.findIndex((notice) => notice.id === id)
     if (index >= 0) {
-      noticeList.value.splice(index, 1);
+      noticeList.value.splice(index, 1)
     }
-  });
+  })
 }
 
 // 查看更多
 function handleViewMoreNotice() {
-  router.push({ path: "/myNotice" });
+  router.push({ path: '/myNotice' })
 }
 
 // 全部已读
 function handleMarkAllAsRead() {
   NoticeAPI.readAll().then(() => {
-    noticeList.value = [];
-  });
+    noticeList.value = []
+  })
 }
 
 onMounted(() => {
-  featchMyNotice();
-});
+  featchMyNotice()
+})
 
 onBeforeUnmount(() => {
-  unsubscribe("/user/queue/message");
-});
+  unsubscribe('/user/queue/message')
+})
 </script>
 
 <style lang="scss" scoped>

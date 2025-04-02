@@ -1,23 +1,23 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-const ROLE_BASE_URL = "/api/v1/roles";
+const ROLE_BASE_URL = '/api/v1/roles'
 
 const RoleAPI = {
   /** 获取角色分页数据 */
   getPage(queryParams?: RolePageQuery) {
     return request<any, PageResult<RolePageVO[]>>({
       url: `${ROLE_BASE_URL}/page`,
-      method: "get",
+      method: 'get',
       params: queryParams,
-    });
+    })
   },
 
   /** 获取角色下拉数据源 */
   getOptions() {
     return request<any, OptionType[]>({
       url: `${ROLE_BASE_URL}/options`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
   /**
    * 获取角色的菜单ID集合
@@ -28,8 +28,8 @@ const RoleAPI = {
   getRoleMenuIds(roleId: number) {
     return request<any, number[]>({
       url: `${ROLE_BASE_URL}/${roleId}/menuIds`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /**
@@ -41,9 +41,9 @@ const RoleAPI = {
   updateRoleMenus(roleId: number, data: number[]) {
     return request({
       url: `${ROLE_BASE_URL}/${roleId}/menus`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -55,17 +55,17 @@ const RoleAPI = {
   getFormData(id: number) {
     return request<any, RoleForm>({
       url: `${ROLE_BASE_URL}/${id}/form`,
-      method: "get",
-    });
+      method: 'get',
+    })
   },
 
   /** 添加角色 */
   create(data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}`,
-      method: "post",
+      method: 'post',
       data: data,
-    });
+    })
   },
 
   /**
@@ -77,9 +77,9 @@ const RoleAPI = {
   update(id: number, data: RoleForm) {
     return request({
       url: `${ROLE_BASE_URL}/${id}`,
-      method: "put",
+      method: 'put',
       data: data,
-    });
+    })
   },
 
   /**
@@ -90,49 +90,49 @@ const RoleAPI = {
   deleteByIds(ids: string) {
     return request({
       url: `${ROLE_BASE_URL}/${ids}`,
-      method: "delete",
-    });
+      method: 'delete',
+    })
   },
-};
+}
 
-export default RoleAPI;
+export default RoleAPI
 
 /** 角色分页查询参数 */
 export interface RolePageQuery extends PageQuery {
   /** 搜索关键字 */
-  keywords?: string;
+  keywords?: string
 }
 
 /** 角色分页对象 */
 export interface RolePageVO {
   /** 角色编码 */
-  code?: string;
+  code?: string
   /** 角色ID */
-  id?: number;
+  id?: number
   /** 角色名称 */
-  name?: string;
+  name?: string
   /** 排序 */
-  sort?: number;
+  sort?: number
   /** 角色状态 */
-  status?: number;
+  status?: number
   /** 创建时间 */
-  createTime?: Date;
+  createTime?: Date
   /** 修改时间 */
-  updateTime?: Date;
+  updateTime?: Date
 }
 
 /** 角色表单对象 */
 export interface RoleForm {
   /** 角色ID */
-  id?: number;
+  id?: number
   /** 角色编码 */
-  code?: string;
+  code?: string
   /** 数据权限 */
-  dataScope?: number;
+  dataScope?: number
   /** 角色名称 */
-  name?: string;
+  name?: string
   /** 排序 */
-  sort?: number;
+  sort?: number
   /** 角色状态(1-正常；0-停用) */
-  status?: number;
+  status?: number
 }

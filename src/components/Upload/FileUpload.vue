@@ -49,9 +49,9 @@ import {
   UploadFiles,
   UploadProgressEvent,
   UploadRequestOptions,
-} from "element-plus";
+} from 'element-plus'
 
-import FileAPI, { FileInfo } from "@/api/file.api";
+import FileAPI, { FileInfo } from '@/api/file.api'
 
 const props = defineProps({
   /**
@@ -60,7 +60,7 @@ const props = defineProps({
   data: {
     type: Object,
     default: () => {
-      return {};
+      return {}
     },
   },
   /**
@@ -68,7 +68,7 @@ const props = defineProps({
    */
   name: {
     type: String,
-    default: "file",
+    default: 'file',
   },
   /**
    * 文件上传数量限制
@@ -89,14 +89,14 @@ const props = defineProps({
    */
   accept: {
     type: String,
-    default: "*",
+    default: '*',
   },
   /**
    * 上传按钮文本
    */
   uploadBtnText: {
     type: String,
-    default: "上传文件",
+    default: '上传文件',
   },
 
   /**
@@ -106,41 +106,41 @@ const props = defineProps({
     type: Object,
     default: () => {
       return {
-        width: "300px",
-      };
+        width: '300px',
+      }
     },
   },
-});
+})
 
-const modelValue = defineModel("modelValue", {
+const modelValue = defineModel('modelValue', {
   type: [Array] as PropType<FileInfo[]>,
   required: true,
   default: () => [],
-});
+})
 
-const fileList = ref([] as UploadFile[]);
+const fileList = ref([] as UploadFile[])
 
-const showProgress = ref(false);
-const progressPercent = ref(0);
+const showProgress = ref(false)
+const progressPercent = ref(0)
 
 // 监听 modelValue 转换用于显示的 fileList
 watch(
   modelValue,
   (value) => {
     fileList.value = value.map((item) => {
-      const name = item.name ? item.name : item.url?.substring(item.url.lastIndexOf("/") + 1);
+      const name = item.name ? item.name : item.url?.substring(item.url.lastIndexOf('/') + 1)
       return {
         name: name,
         url: item.url,
-        status: "success",
+        status: 'success',
         uid: getUid(),
-      } as UploadFile;
-    });
+      } as UploadFile
+    })
   },
   {
     immediate: true,
-  }
-);
+  },
+)
 
 /**
  * 上传前校验
@@ -148,10 +148,10 @@ watch(
 function handleBeforeUpload(file: UploadRawFile) {
   // 限制文件大小
   if (file.size > props.maxFileSize * 1024 * 1024) {
-    ElMessage.warning("上传文件不能大于" + props.maxFileSize + "M");
-    return false;
+    ElMessage.warning('上传文件不能大于' + props.maxFileSize + 'M')
+    return false
   }
-  return true;
+  return true
 }
 
 /*
@@ -159,24 +159,24 @@ function handleBeforeUpload(file: UploadRawFile) {
  */
 function handleUpload(options: UploadRequestOptions) {
   return new Promise((resolve, reject) => {
-    const file = options.file;
+    const file = options.file
 
-    const formData = new FormData();
-    formData.append(props.name, file);
+    const formData = new FormData()
+    formData.append(props.name, file)
 
     // 处理附加参数
     Object.keys(props.data).forEach((key) => {
-      formData.append(key, props.data[key]);
-    });
+      formData.append(key, props.data[key])
+    })
 
     FileAPI.upload(formData)
       .then((data) => {
-        resolve(data);
+        resolve(data)
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
+        reject(error)
+      })
+  })
 }
 
 /**
@@ -185,73 +185,73 @@ function handleUpload(options: UploadRequestOptions) {
  * @param event
  */
 const handleProgress = (event: UploadProgressEvent) => {
-  progressPercent.value = event.percent;
-};
+  progressPercent.value = event.percent
+}
 
 /**
  * 上传成功
  */
 const handleSuccess = (response: any, uploadFile: UploadFile, files: UploadFiles) => {
-  ElMessage.success("上传成功");
+  ElMessage.success('上传成功')
   //只有当状态为success或者fail，代表文件上传全部完成了，失败也算完成
   if (
     files.every((file: UploadFile) => {
-      return file.status === "success" || file.status === "fail";
+      return file.status === 'success' || file.status === 'fail'
     })
   ) {
-    let fileInfos = [] as FileInfo[];
+    let fileInfos = [] as FileInfo[]
     files.map((file: UploadFile) => {
-      if (file.status === "success") {
+      if (file.status === 'success') {
         //只取携带response的才是刚上传的
-        let res = file.response as FileInfo;
+        let res = file.response as FileInfo
         if (res) {
-          fileInfos.push({ name: res.name, url: res.url } as FileInfo);
+          fileInfos.push({ name: res.name, url: res.url } as FileInfo)
         }
       } else {
         //失败上传 从fileList删掉，不展示
         fileList.value.splice(
           fileList.value.findIndex((e) => e.uid === file.uid),
-          1
-        );
+          1,
+        )
       }
-    });
+    })
     if (fileInfos.length > 0) {
-      modelValue.value = [...modelValue.value, ...fileInfos];
+      modelValue.value = [...modelValue.value, ...fileInfos]
     }
   }
-};
+}
 
 /**
  * 上传失败
  */
 const handleError = (_error: any) => {
-  console.error(_error);
-  ElMessage.error("上传失败");
-};
+  console.error(_error)
+  ElMessage.error('上传失败')
+}
 
 /**
  * 删除文件
  */
 function handleRemove(fileUrl: string) {
   FileAPI.delete(fileUrl).then(() => {
-    modelValue.value = modelValue.value.filter((file) => file.url !== fileUrl);
-  });
+    modelValue.value = modelValue.value.filter((file) => file.url !== fileUrl)
+  })
 }
 
 /**
  * 下载文件
  */
 function handleDownload(file: UploadUserFile) {
-  const { url, name } = file;
+  const { url, name } = file
   if (url) {
-    FileAPI.download(url, name);
+    FileAPI.download(url, name)
   }
 }
 
 /** 获取一个不重复的id */
 function getUid(): number {
   // 时间戳左移13位（相当于乘以8192） + 4位随机数
-  return (Date.now() << 13) | Math.floor(Math.random() * 8192);
+  return (Date.now() << 13) | Math.floor(Math.random() * 8192)
 }
 </script>
 <style lang="scss" scoped>
