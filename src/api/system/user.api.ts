@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const USER_BASE_URL = '/api/v1/users'
+const USER_BASE_URL = '/user'
 
 const UserAPI = {
   /**
@@ -8,9 +8,9 @@ const UserAPI = {
    *
    * @returns 登录用户昵称、头像信息，包括角色和权限
    */
-  getInfo() {
+  getInfo(userId: number) {
     return request<any, UserInfo>({
-      url: `${USER_BASE_URL}/me`,
+      url: `${USER_BASE_URL}/${userId}`,
       method: 'get',
     })
   },

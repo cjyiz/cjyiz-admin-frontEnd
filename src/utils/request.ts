@@ -9,13 +9,16 @@ import router from '@/router'
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 50000,
-  headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  headers: { 'Content-Type': 'application/json;charset=utf-8', Authorization: 'auth' },
   paramsSerializer: (params) => qs.stringify(params),
 })
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    console.log('请求拦截', config)
     const accessToken = getAccessToken()
+    console.log('请求拦截2', accessToken)
+
     // 如果 Authorization 设置为 no-auth，则不携带 Token
     if (config.headers.Authorization !== 'no-auth' && accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`
@@ -33,12 +36,13 @@ service.interceptors.response.use(
     if (response.config.responseType === 'blob') {
       return response
     }
-    const { code, data, msg } = response.data
-    if (code === ResultEnum.SUCCESS) {
-      return data
-    }
-    ElMessage.error(msg || '系统出错')
-    return Promise.reject(new Error(msg || 'Error'))
+    // const { code, data, msg } = response.data
+    // if (code === ResultEnum.SUCCESS) {
+    //   return data
+    // }
+    return response.data
+    // ElMessage.error(msg || '系统出错')
+    // return Promise.reject(new Error(msg || 'Error'))
   },
   async (error) => {
     console.error('request error', error) // for debug

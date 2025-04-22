@@ -2,7 +2,7 @@ import { store } from '@/store'
 import { usePermissionStoreHook } from '@/store/modules/permission.store'
 import { useDictStoreHook } from '@/store/modules/dict.store'
 
-import AuthAPI, { type LoginFormData } from '@/api/auth.api'
+import AuthAPI, { LoginResult, type LoginFormData } from '@/api/auth.api'
 import UserAPI, { type UserInfo } from '@/api/system/user.api'
 
 import { setAccessToken, setRefreshToken, getRefreshToken, clearToken } from '@/utils/auth'
@@ -17,13 +17,14 @@ export const useUserStore = defineStore('user', () => {
    * @returns
    */
   function login(LoginFormData: LoginFormData) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<LoginResult>((resolve, reject) => {
       AuthAPI.login(LoginFormData)
         .then((data) => {
-          const { accessToken, refreshToken } = data
+          console.log('结果', data)
+          const { accessToken } = data
           setAccessToken(accessToken) // eyJhbGciOiJIUzI1NiJ9.xxx.xxx
-          setRefreshToken(refreshToken)
-          resolve()
+          // setRefreshToken(accessToken)
+          resolve(data)
         })
         .catch((error) => {
           reject(error)
@@ -36,9 +37,10 @@ export const useUserStore = defineStore('user', () => {
    *
    * @returns {UserInfo} 用户信息
    */
-  function getUserInfo() {
+  function getUserInfo(userId: number) {
     return new Promise<UserInfo>((resolve, reject) => {
-      UserAPI.getInfo()
+      console.log('cjyiz传入的参数', userId)
+      UserAPI.getInfo(userId)
         .then((data) => {
           if (!data) {
             reject('Verification failed, please Login again.')

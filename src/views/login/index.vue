@@ -224,10 +224,11 @@ async function handleLoginSubmit() {
   loading.value = true
   try {
     // 2. 执行登录
-    await userStore.login(loginFormData.value)
-
+    const res = await userStore.login(loginFormData.value)
+    console.log('登陆成功了吗', res)
+    const userId = res.userId || ''
     // 3. 获取用户信息
-    await userStore.getUserInfo()
+    await userStore.getUserInfo(userId)
 
     // 4. 解析并跳转目标地址
     const redirect = resolveRedirectTarget(route.query)
