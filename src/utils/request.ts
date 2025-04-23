@@ -46,8 +46,11 @@ service.interceptors.response.use(
   },
   async (error) => {
     console.error('request error', error) // for debug
+    console.log('日志2', error)
+
     const { config, response } = error
     if (response) {
+      console.log('日志', response)
       const { code, msg } = response.data
       if (code === ResultEnum.ACCESS_TOKEN_INVALID) {
         // Token 过期，刷新 Token
