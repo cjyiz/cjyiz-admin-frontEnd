@@ -184,10 +184,17 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
       minify: 'terser', // Vite 2.6.x 以上需要配置 minify: "terser", terserOptions 才能生效
       terserOptions: {
+        // compress: {
+        //   keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
+        //   drop_console: false, // 生产环境去除 console
+        //   drop_debugger: false, // 生产环境去除 debugger
+        // },
         compress: {
-          keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
-          drop_console: false, // 生产环境去除 console
-          drop_debugger: false, // 生产环境去除 debugger
+          // 不启用drop_console，而是手动指定要移除的console方法
+          pure_funcs: [
+            'console.warn',
+            // console.log 不在列表中，所以会被保留
+          ],
         },
         format: {
           comments: false, // 删除注释

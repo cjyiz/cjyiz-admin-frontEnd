@@ -24,7 +24,7 @@ const settingsStore = useSettingsStore()
 const locale = computed(() => appStore.locale)
 const size = computed(() => appStore.size as ComponentSize)
 const watermarkEnabled = computed(() => settingsStore.watermarkEnabled)
-
+console.log('主体价值')
 // 明亮/暗黑主题水印字体颜色适配
 const fontColor = computed(() => {
   return settingsStore.theme === ThemeMode.DARK ? 'rgba(255, 255, 255, .15)' : 'rgba(0, 0, 0, .15)'
