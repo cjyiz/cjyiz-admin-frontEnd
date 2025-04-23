@@ -47,7 +47,7 @@ service.interceptors.response.use(
   },
   async (error) => {
     console.error('request error', error) // for debug
-    console.log('日志2', error)
+    console.log('响应拦截2', error)
 
     const { config, response } = error
     if (response) {
