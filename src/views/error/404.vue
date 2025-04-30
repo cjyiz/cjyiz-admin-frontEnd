@@ -5,7 +5,7 @@
       <div class="oops mb-5 text-[2rem] font-bold">OOPS！</div>
       <div class="info text-gray mb-7 text-[0.8125rem]">
         该页面无法访问。
-        <el-link type="primary" href="https://www.youlai.tech.com" target="_blank">
+        <el-link type="primary" href="https://www.cjyiz.com" target="_blank">
           有来开源官网
         </el-link>
       </div>

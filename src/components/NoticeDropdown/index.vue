@@ -130,6 +130,7 @@ watch(
  */
 function featchMyNotice() {
   NoticeAPI.getMyNoticePage({ pageNum: 1, pageSize: 5, isRead: 0 }).then((data) => {
+    console.log('cjyiz获取的通知', data)
     noticeList.value = data.list
   })
 }

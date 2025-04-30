@@ -168,7 +168,7 @@
               <el-link
                 type="primary"
                 :underline="false"
-                href="https://gitee.com/youlaiorg/vue3-element-admin/releases"
+                href="https://github.com/cjyiz/cjyiz-element-admin-frontend"
                 target="_blank"
               >
                 完整记录
@@ -248,7 +248,7 @@ const vesionList = ref<VersionItem[]>([
     title: 'v2.4.0',
     date: '2021-09-01 00:00:00',
     content: '实现基础框架搭建，包含权限管理、路由系统等核心功能。',
-    link: 'https://gitee.com/youlaiorg/vue3-element-admin/releases',
+    link: 'https://github.com/cjyiz/cjyiz-element-admin-frontend',
     tag: '里程碑',
   },
   {
@@ -256,7 +256,7 @@ const vesionList = ref<VersionItem[]>([
     title: 'v2.4.0',
     date: '2021-09-01 00:00:00',
     content: '实现基础框架搭建，包含权限管理、路由系统等核心功能。',
-    link: 'https://gitee.com/youlaiorg/vue3-element-admin/releases',
+    link: 'https://github.com/cjyiz/cjyiz-element-admin-frontends',
     tag: '里程碑',
   },
   {
@@ -264,7 +264,7 @@ const vesionList = ref<VersionItem[]>([
     title: 'v2.4.0',
     date: '2021-09-01 00:00:00',
     content: '实现基础框架搭建，包含权限管理、路由系统等核心功能。',
-    link: 'https://gitee.com/youlaiorg/vue3-element-admin/releases',
+    link: 'https://github.com/cjyiz/cjyiz-element-admin-frontend',
     tag: '里程碑',
   },
 ])
@@ -312,6 +312,7 @@ const visitTrendChartOptions = ref()
 const fetchVisitStatsData = () => {
   LogAPI.getVisitStats()
     .then((data) => {
+      console.log('cjyiz获取的访问数据', data)
       visitStatsData.value = data
     })
     .finally(() => {
