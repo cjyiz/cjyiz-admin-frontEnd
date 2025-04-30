@@ -46,7 +46,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
           // 代理目标地址：http://cjyiz.com/api
-          target: 'http://cjyiz.com/api',
+          target: env.VITE_APP_API_URL,
+          // target: 'http://cjyiz.com/api',
           rewrite: (path) => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), ''),
         },
       },
