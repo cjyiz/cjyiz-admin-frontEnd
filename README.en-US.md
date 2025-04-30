@@ -12,7 +12,7 @@
 
   <a href="https://gitee.com/youlaiorg/youlai-boot" target="_blank">
      <img alt="有来技术" src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
-   </a>     
+   </a>
   <a href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
     <img alt="有来技术" src="https://img.shields.io/github/stars/youlaitech/vue3-element-admin.svg?style=social&label=Stars"/>
   </a>
