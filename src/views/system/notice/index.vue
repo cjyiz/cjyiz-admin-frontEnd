@@ -60,11 +60,11 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column label="通知标题" prop="title" min-width="200" />
-        <el-table-column align="center" label="通知类型" width="150">
+        <!-- <el-table-column align="center" label="通知类型" width="150">
           <template #default="scope">
             <DictLabel v-model="scope.row.type" :code="'notice_type'" />
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center" label="发布人" prop="publisherName" width="150" />
         <el-table-column align="center" label="通知等级" width="100">
           <template #default="scope">
