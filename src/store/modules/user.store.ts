@@ -62,6 +62,7 @@ export const useUserStore = defineStore('user', () => {
     return new Promise<void>((resolve, reject) => {
       AuthAPI.logout()
         .then(() => {
+          console.log('登出成功')
           clearSessionAndCache()
           resolve()
         })

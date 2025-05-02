@@ -35,7 +35,7 @@ const AuthAPI = {
   /** 注销登录接口 */
   logout() {
     return request({
-      url: `${AUTH_BASE_URL}/logout`,
+      url: `${AUTH_BASE_URL}/auth/logout`,
       method: 'delete',
     })
   },
