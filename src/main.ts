@@ -10,7 +10,6 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import '@/styles/dark/css-vars.css'
 import '@/styles/index.scss'
 import 'uno.css'
-console.log('123')
 // 全局引入 animate.css
 import 'animate.css'
 
